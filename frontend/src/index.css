@@ -1,0 +1,523 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* ==========================================================================
+   Craftsman Automation - Enterprise Design System
+   Modern, Precision-Engineered B2B Procurement Theme
+   ========================================================================== */
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, Monaco, monospace;
+}
+
+/* --------------------------------------------------------------------------
+   DARK THEME (Default Enterprise Mode)
+   -------------------------------------------------------------------------- */
+body.theme-dark {
+  --bg-primary: #0A0E1A;          /* Deep obsidian canvas */
+  --bg-secondary: #0F172A;        /* Slate container */
+  --bg-card: #131E36;             /* Card surface */
+  --bg-card-hover: #1A2744;       /* Card hover state */
+  --bg-input: #0B1324;            /* Dark input field */
+  --bg-elevated: #1E293B;         /* Dropdowns & Popovers */
+  --border-color: #202F4E;        /* Subtle divider */
+  --border-focus: #3B82F6;        /* Active focus blue */
+  --border-light: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #F8FAFC;        /* High-contrast crisp white */
+  --text-secondary: #94A3B8;      /* Slate secondary */
+  --text-muted: #64748B;          /* Muted metadata */
+
+  --brand-primary: #2563EB;       /* Craftsman Blue */
+  --brand-secondary: #0284C7;     /* Cyan accent */
+  --accent-blue: #38BDF8;
+  --accent-cyan: #06B6D4;
+  --accent-green: #10B981;        /* Lowest price emerald */
+  --accent-amber: #F59E0B;        /* Notice amber */
+  --accent-red: #EF4444;          /* Alert red */
+
+  --lowest-price-bg: rgba(16, 185, 129, 0.1);
+  --lowest-price-border: #10B981;
+  --lowest-price-text: #34D399;
+
+  --sidebar-bg: #0B1120;
+  --sidebar-border: #1E293B;
+  --header-bg: #0F172A;
+  --header-border: #1E293B;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   LIGHT THEME (Clean Enterprise Daylight)
+   -------------------------------------------------------------------------- */
+body.theme-light {
+  --bg-primary: #F8FAFC;          /* Clean soft canvas */
+  --bg-secondary: #FFFFFF;        /* White container */
+  --bg-card: #FFFFFF;             /* Crisp card */
+  --bg-card-hover: #F1F5F9;       /* Hover tint */
+  --bg-input: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --border-color: #E2E8F0;        /* Refined border */
+  --border-focus: #2563EB;
+  --border-light: rgba(0, 0, 0, 0.05);
+
+  --text-primary: #0F172A;        /* Deep slate text */
+  --text-secondary: #475569;      /* Medium slate */
+  --text-muted: #94A3B8;          /* Muted labels */
+
+  --brand-primary: #1D4ED8;
+  --brand-secondary: #0284C7;
+  --accent-blue: #0284C7;
+  --accent-cyan: #0891B2;
+  --accent-green: #059669;        /* Emerald */
+  --accent-amber: #D97706;
+  --accent-red: #DC2626;
+
+  --lowest-price-bg: #ECFDF5;
+  --lowest-price-border: #059669;
+  --lowest-price-text: #065F46;
+
+  --sidebar-bg: #0F172A;          /* Navy sidebar in light mode for executive contrast */
+  --sidebar-border: #1E293B;
+  --header-bg: #FFFFFF;
+  --header-border: #E2E8F0;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+/* --------------------------------------------------------------------------
+   BASE STYLING & RESETS
+   -------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mono {
+  font-family: var(--font-mono) !important;
+  letter-spacing: -0.01em;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   APPLICATION SHELL LAYOUT
+   -------------------------------------------------------------------------- */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.sidebar-wrapper {
+  width: 260px;
+  min-width: 260px;
+  flex-shrink: 0;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--bg-primary);
+}
+
+/* Top Navbar Header */
+.top-navbar {
+  height: 64px;
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: var(--shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+   ENTERPRISE CARDS & CONTAINERS
+   -------------------------------------------------------------------------- */
+.craftsman-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.craftsman-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: var(--shadow-md);
+}
+
+/* KPI Stat Cards */
+.kpi-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  padding: 1.15rem 1.25rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--brand-primary);
+}
+
+.kpi-card.green::before { background: var(--accent-green); }
+.kpi-card.amber::before { background: var(--accent-amber); }
+.kpi-card.cyan::before { background: var(--accent-cyan); }
+.kpi-card.red::before { background: var(--accent-red); }
+
+/* --------------------------------------------------------------------------
+   FORM CONTROLS & INPUTS
+   -------------------------------------------------------------------------- */
+.craftsman-input,
+.form-control.craftsman-input,
+.form-select.craftsman-input {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 7px;
+  padding: 0.62rem 0.85rem;
+  font-size: 0.88rem;
+  transition: all 0.15s ease;
+}
+
+.craftsman-input:focus,
+.form-control.craftsman-input:focus,
+.form-select.craftsman-input:focus {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.craftsman-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+/* Select options */
+.form-select.craftsman-input option {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   ENTERPRISE BUTTONS
+   -------------------------------------------------------------------------- */
+.craftsman-btn-primary {
+  background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
+  color: #FFFFFF !important;
+  border: 1px solid #1D4ED8;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.62rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(29, 78, 216, 0.25);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.craftsman-btn-primary:hover {
+  background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 100%);
+  border-color: #1E40AF;
+  box-shadow: 0 4px 8px rgba(29, 78, 216, 0.35);
+  transform: translateY(-1px);
+}
+
+.craftsman-btn-primary:active {
+  transform: translateY(0);
+}
+
+.craftsman-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.craftsman-btn-outline {
+  background: transparent;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.craftsman-btn-outline:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+  color: var(--text-primary) !important;
+}
+
+.craftsman-btn-success {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  color: #FFFFFF !important;
+  border: 1px solid #059669;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.craftsman-btn-success:hover {
+  background: #059669;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   COMPARISON TABLE - 11 COLUMNS WITH STICKY HEADER & LOWEST HIGHLIGHT
+   -------------------------------------------------------------------------- */
+.comparison-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.table-craftsman {
+  width: 100%;
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--text-primary);
+  font-size: 0.86rem;
+}
+
+.table-craftsman thead th {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-craftsman tbody td {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  background-color: var(--bg-card);
+  transition: background-color 0.1s ease;
+}
+
+.table-craftsman tbody tr:hover td {
+  background-color: var(--bg-card-hover);
+}
+
+/* Lowest Price Row Highlight */
+.table-craftsman tbody tr.lowest-price-row td {
+  background-color: var(--lowest-price-bg) !important;
+  border-bottom-color: rgba(16, 185, 129, 0.3);
+}
+
+.table-craftsman tbody tr.lowest-price-row td:first-child {
+  border-left: 3px solid var(--accent-green);
+}
+
+/* --------------------------------------------------------------------------
+   ENTERPRISE STATUS BADGES & PILLS
+   -------------------------------------------------------------------------- */
+.badge-lowest {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  color: #FFFFFF;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
+}
+
+.badge-match-exact {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 4px;
+  font-size: 0.74rem;
+  padding: 0.2rem 0.55rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.badge-match-high {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 4px;
+  font-size: 0.74rem;
+  padding: 0.2rem 0.55rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.badge-match-partial {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 4px;
+  font-size: 0.74rem;
+  padding: 0.2rem 0.55rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.badge-portal {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+/* Status Pulse Indicator */
+.pulse-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+  animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* --------------------------------------------------------------------------
+   INTERACTIVE RECHARTS & TOOLTIPS
+   -------------------------------------------------------------------------- */
+.recharts-default-tooltip {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-lg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE UTILITIES
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .sidebar-wrapper {
+    width: 72px;
+    min-width: 72px;
+  }
+  .sidebar-wrapper .sidebar-label,
+  .sidebar-wrapper .sidebar-badge,
+  .sidebar-wrapper .brand-details,
+  .sidebar-wrapper .engine-widget {
+    display: none !important;
+  }
+  .sidebar-wrapper .brand-header {
+    justify-content: center !important;
+    padding: 0.75rem !important;
+  }
+  .sidebar-wrapper .nav-link {
+    justify-content: center !important;
+    padding: 0.75rem 0.5rem !important;
+  }
+}
