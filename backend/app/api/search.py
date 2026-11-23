@@ -2,8 +2,11 @@ import json
 import statistics
 import datetime
 import urllib.parse
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+import io
+from typing import List, Optional, Dict, Any
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.search import SearchQuery, SearchResult, ProductPrice
@@ -18,9 +21,23 @@ from app.schemas.search import (
 from app.services.orchestrator import search_orchestrator
 from app.services.uom_normalizer import uom_normalizer
 from app.services.spec_validator import spec_validator
+from app.services.excel_service import excel_bom_service
 from app.api.deps import get_current_user
 
 router = APIRouter(prefix="/search", tags=["Market Price Discovery"])
+
+class BatchItemRequest(BaseModel):
+    item_code: str
+    raw_description: Optional[str] = None
+    clean_query: Optional[str] = None
+    part_number: Optional[str] = None
+
+class BatchSearchPayload(BaseModel):
+    items: List[BatchItemRequest]
+    target_currency: str = "INR"
+
+class BatchExportPayload(BaseModel):
+    results: List[Dict[str, Any]]
 
 @router.post("", response_model=ComparisonMatrixResponse)
 async def initiate_search(
@@ -250,5 +267,125 @@ def get_search_results(search_id: int, db: Session = Depends(get_db)):
         common_uom=common_uom,
         items=items,
         supplier_statuses=[]
+    )
+
+@router.post("/upload-excel")
+async def upload_excel_bom(
+    file: UploadFile = File(...),
+    current_user: Optional[User] = Depends(get_current_user)
+):
+    """Parses an uploaded BOM Excel/CSV file containing ITEM_CODE and ITEM_DESC."""
+    if not file.filename.lower().endswith((".xlsx", ".xls", ".csv")):
+        raise HTTPException(status_code=400, detail="Only Excel (.xlsx, .xls) or CSV (.csv) files are supported.")
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+
+    try:
+        parsed_items = excel_bom_service.parse_excel_file(content, file.filename)
+        return {
+            "success": True,
+            "filename": file.filename,
+            "total_items": len(parsed_items),
+            "items": parsed_items
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to parse Excel file: {str(e)}")
+
+@router.post("/batch-search")
+async def batch_search_items(
+    payload: BatchSearchPayload,
+    current_user: Optional[User] = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Executes multi-supplier market price discovery for each item in the batch."""
+    if not payload.items:
+        raise HTTPException(status_code=400, detail="No items provided for batch discovery.")
+
+    user_id = current_user.id if current_user else None
+    batch_results = []
+
+    for item in payload.items:
+        q = item.clean_query or item.raw_description or item.item_code
+        pn = item.part_number or item.item_code
+        try:
+            res = await search_orchestrator.execute_search(
+                db=db,
+                query=q,
+                part_number=pn,
+                target_currency=payload.target_currency,
+                user_id=user_id
+            )
+            best_supp = "Multiple"
+            best_link = ""
+            if res.items:
+                top_item = res.items[0]
+                best_supp = top_item.supplier_name
+                best_link = top_item.source_url
+
+            batch_results.append({
+                "item_code": item.item_code,
+                "raw_description": item.raw_description or "",
+                "clean_query": q,
+                "part_number": pn,
+                "search_id": res.search_id,
+                "status": "COMPLETED",
+                "lowest_price": res.lowest_price,
+                "average_price": res.average_price,
+                "highest_price": res.highest_price,
+                "potential_savings_amount": res.potential_savings_amount,
+                "potential_savings_percentage": res.potential_savings_percentage,
+                "common_uom": res.common_uom,
+                "best_supplier": best_supp,
+                "suppliers_succeeded": res.successful_suppliers_count,
+                "direct_link": best_link,
+                "match_classification": res.items[0].match_classification if res.items else "Verified Match",
+                "match_confidence": res.items[0].match_confidence if res.items else 0.0
+            })
+        except Exception as e:
+            batch_results.append({
+                "item_code": item.item_code,
+                "raw_description": item.raw_description or "",
+                "clean_query": q,
+                "part_number": pn,
+                "search_id": None,
+                "status": "FAILED",
+                "lowest_price": None,
+                "average_price": None,
+                "highest_price": None,
+                "potential_savings_amount": 0.0,
+                "potential_savings_percentage": 0.0,
+                "common_uom": "Piece",
+                "best_supplier": "Error",
+                "suppliers_succeeded": 0,
+                "direct_link": "",
+                "match_classification": "Error",
+                "match_confidence": 0.0
+            })
+
+    return {
+        "total_items": len(payload.items),
+        "results": batch_results
+    }
+
+@router.post("/export-batch-excel")
+async def export_batch_excel(payload: BatchExportPayload):
+    """Exports batch price discovery results to a formatted Excel report."""
+    excel_bytes = excel_bom_service.generate_batch_report(payload.results)
+    return StreamingResponse(
+        io.BytesIO(excel_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=Craftsman_BOM_Price_Comparison.xlsx"}
+    )
+
+@router.get("/sample-template")
+def download_sample_template():
+    """Downloads a ready-to-use sample Excel template matching Craftsman BOM format."""
+    template_bytes = excel_bom_service.generate_sample_template()
+    return StreamingResponse(
+        io.BytesIO(template_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=Craftsman_BOM_Template.xlsx"}
     )
 

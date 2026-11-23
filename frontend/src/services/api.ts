@@ -136,6 +136,56 @@ export const apiClient = {
 
   getPdfExportUrl(searchId: number): string {
     return `${API_BASE}/reports/export/pdf/${searchId}`;
+  },
+
+  // Excel BOM Batch Discovery
+  async uploadExcelBOM(file: File): Promise<{
+    success: boolean;
+    filename: string;
+    total_items: number;
+    items: Array<{
+      row_number: number;
+      item_code: string;
+      raw_description: string;
+      clean_query: string;
+      extracted_part_number: string;
+    }>;
+  }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await api.post('/search/upload-excel', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return res.data;
+  },
+
+  async runBatchSearch(items: Array<{
+    item_code: string;
+    raw_description?: string;
+    clean_query?: string;
+    part_number?: string;
+  }>, target_currency = 'INR'): Promise<{
+    total_items: number;
+    results: any[];
+  }> {
+    const res = await api.post('/search/batch-search', {
+      items,
+      target_currency,
+    });
+    return res.data;
+  },
+
+  async exportBatchExcel(results: any[]): Promise<Blob> {
+    const res = await api.post('/search/export-batch-excel', { results }, {
+      responseType: 'blob'
+    });
+    return res.data;
+  },
+
+  getSampleTemplateUrl(): string {
+    return `${API_BASE}/search/sample-template`;
   }
 };
 

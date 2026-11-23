@@ -4,15 +4,24 @@ import { apiClient } from '../services/api';
 import { ComparisonMatrixResponse, PriceHistoryResponse } from '../types';
 import { SearchForm } from '../components/search/SearchForm';
 import { SearchProgress } from '../components/search/SearchProgress';
+import { ExcelBOMDiscovery } from '../components/search/ExcelBOMDiscovery';
 import { PriceCharts } from '../components/comparison/PriceCharts';
 import { ComparisonTable } from '../components/comparison/ComparisonTable';
 import { PriceHistoryChart } from '../components/history/PriceHistoryChart';
-import { FileSpreadsheet, FileText, History, RefreshCw, CheckCircle2, AlertTriangle, ShieldCheck, Search } from 'lucide-react';
+import { FileSpreadsheet, FileText, History, RefreshCw, CheckCircle2, AlertTriangle, ShieldCheck, Search, UploadCloud } from 'lucide-react';
 
 export const DiscoveryPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchIdParam = searchParams.get('search_id');
+  const modeParam = searchParams.get('mode');
 
+  const [activeMode, setActiveMode] = useState<'single' | 'excel'>(modeParam === 'excel' ? 'excel' : 'single');
+
+  useEffect(() => {
+    if (modeParam === 'excel') {
+      setActiveMode('excel');
+    }
+  }, [modeParam]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentQuery, setCurrentQuery] = useState('');
   const [currentPartNumber, setCurrentPartNumber] = useState('');
@@ -120,8 +129,46 @@ export const DiscoveryPage: React.FC = () => {
         )}
       </div>
 
-      {/* Prominent Search Form */}
-      <SearchForm onSearch={handleInitiateSearch} isLoading={isLoading} />
+      {/* Mode Switcher Tabs */}
+      <div className="d-flex align-items-center gap-2 mb-4 p-1.5 rounded-3 d-inline-flex" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+        <button
+          type="button"
+          onClick={() => setActiveMode('single')}
+          className={`btn btn-sm d-flex align-items-center gap-2 px-3 py-1.5 fw-semibold ${activeMode === 'single' ? 'craftsman-btn-primary' : 'text-secondary border-0 bg-transparent'}`}
+          style={{ fontSize: '0.84rem' }}
+        >
+          <Search size={15} />
+          <span>Single Item Search</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveMode('excel')}
+          className={`btn btn-sm d-flex align-items-center gap-2 px-3 py-1.5 fw-semibold ${activeMode === 'excel' ? 'craftsman-btn-primary' : 'text-secondary border-0 bg-transparent'}`}
+          style={{ fontSize: '0.84rem' }}
+        >
+          <UploadCloud size={15} />
+          <span>Bulk Excel BOM Upload</span>
+          <span className="badge bg-success-subtle text-success border border-success-subtle ms-1" style={{ fontSize: '0.68rem' }}>
+            ITEM_CODE & DESC
+          </span>
+        </button>
+      </div>
+
+      {/* Excel BOM Mode */}
+      {activeMode === 'excel' && (
+        <ExcelBOMDiscovery
+          onSelectSearchId={(id) => {
+            loadExistingSearch(id);
+            setActiveMode('single');
+          }}
+        />
+      )}
+
+      {/* Single Search Mode */}
+      {activeMode === 'single' && (
+        <SearchForm onSearch={handleInitiateSearch} isLoading={isLoading} />
+      )}
 
       {/* Error Alert */}
       {errorMsg && (

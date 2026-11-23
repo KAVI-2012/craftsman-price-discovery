@@ -14,7 +14,8 @@ import {
   Layers,
   Activity,
   CheckCircle2,
-  TrendingDown
+  TrendingDown,
+  UploadCloud
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
@@ -23,6 +24,7 @@ export const Sidebar: React.FC = () => {
   const coreNav = [
     { label: 'Dashboard', path: '/', icon: <LayoutDashboard size={18} /> },
     { label: 'Price Discovery', path: '/discovery', icon: <Search size={18} />, badge: '7 Portals' },
+    { label: 'Excel BOM Upload', path: '/discovery?mode=excel', icon: <UploadCloud size={18} />, badge: 'BOM' },
     { label: 'Search History', path: '/history', icon: <History size={18} /> },
   ];
 
