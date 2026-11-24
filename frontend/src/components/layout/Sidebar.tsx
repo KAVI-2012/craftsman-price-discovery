@@ -2,17 +2,94 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-  LayoutGrid,
-  FolderTree,
+  ArrowRightLeft,
+  Gavel,
+  PiggyBank,
   Cpu,
-  Settings,
-  Bell,
-  Trash2,
   ChevronDown,
   ChevronUp,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+
+/* --------------------------------------------------------------------------
+   CUSTOM SVG ICONS MATCHING EXECUTIVE PROCUREMENT REFERENCE (media_1795511381779_73d0bc04)
+   -------------------------------------------------------------------------- */
+
+// 1. Executive Overview Icon: Card Screen with 3 Vertical Bar Charts
+const ExecutiveOverviewIcon: React.FC<{ size?: number; className?: string }> = ({
+  size = 20,
+  className = ''
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <rect width="18" height="18" x="3" y="3" rx="2.5" />
+    <path d="M8 17v-3" />
+    <path d="M12 17v-6" />
+    <path d="M16 17v-8" />
+  </svg>
+);
+
+// 2. Price Discovery Engine Icon: Trending Up Line Graph with Magnifying Glass
+const PriceDiscoveryIcon: React.FC<{ size?: number; className?: string }> = ({
+  size = 20,
+  className = ''
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M3 13.5l4.5-6.5 4.5 4.5 7.5-8" />
+    <circle cx="10" cy="16" r="3.2" />
+    <path d="m12.3 18.3 2.7 2.7" />
+  </svg>
+);
+
+// 5. Portal Connectors Icon: Central Hub Node connected radially to outer nodes
+const PortalConnectorsIcon: React.FC<{ size?: number; className?: string }> = ({
+  size = 20,
+  className = ''
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <circle cx="12" cy="12" r="2.5" />
+    <circle cx="12" cy="4" r="1.8" />
+    <circle cx="4.5" cy="9.5" r="1.8" />
+    <circle cx="19.5" cy="9.5" r="1.8" />
+    <circle cx="7" cy="19" r="1.8" />
+    <circle cx="17" cy="19" r="1.8" />
+    <line x1="12" y1="9.5" x2="12" y2="5.8" />
+    <line x1="9.8" y1="10.8" x2="6.3" y2="9.8" />
+    <line x1="14.2" y1="10.8" x2="17.7" y2="9.8" />
+    <line x1="10.2" y1="14" x2="8.2" y2="17.3" />
+    <line x1="13.8" y1="14" x2="15.8" y2="17.3" />
+  </svg>
+);
 
 export const Sidebar: React.FC = () => {
   const { isAdmin } = useAuth();
@@ -32,13 +109,11 @@ export const Sidebar: React.FC = () => {
   // Accordion open/close state
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     discovery: true,
-    intelligence: false,
-    admin: false
+    connectors: false
   });
 
   const toggleGroup = (groupKey: string) => {
     if (isCollapsed) {
-      // If collapsed, expand the sidebar when clicking an accordion group
       setIsCollapsed(false);
       localStorage.setItem('craftsman_sidebar_collapsed', 'false');
     }
@@ -66,7 +141,7 @@ export const Sidebar: React.FC = () => {
       {/* 1. Header with Logo & Toggle Button */}
       <div className={`sidebar-header ${isCollapsed ? 'collapsed' : ''}`}>
         {isCollapsed ? (
-          /* Collapsed Header: Centered Logo + Centered Toggle Button (No overlap, perfectly aligned inside header) */
+          /* Collapsed Header: Centered Logo + Centered Toggle Button Below */
           <>
             <div
               className="rounded-3 d-flex align-items-center justify-content-center shadow-sm"
@@ -106,7 +181,6 @@ export const Sidebar: React.FC = () => {
           /* Expanded Header: Logo + Brand Title + Collapse Button (<) */
           <>
             <div className="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1">
-              {/* Logo badge with white rounded card */}
               <div
                 className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm"
                 style={{
@@ -127,7 +201,6 @@ export const Sidebar: React.FC = () => {
                 </div>
               </div>
 
-              {/* Brand Name */}
               <div className="text-truncate" style={{ lineHeight: 1.15 }}>
                 <div
                   className="fw-bold tracking-tight text-white"
@@ -144,7 +217,6 @@ export const Sidebar: React.FC = () => {
               </div>
             </div>
 
-            {/* Circular Collapse Button (<) */}
             <button
               type="button"
               onClick={toggleSidebar}
@@ -158,9 +230,9 @@ export const Sidebar: React.FC = () => {
         )}
       </div>
 
-      {/* 2. Navigation List Container (Uses full vertical space) */}
+      {/* 2. Navigation List Container (Using exact icons and names from Executive reference) */}
       <div className="sidebar-nav-container">
-        {/* --- Top Nav: Dashboard --- */}
+        {/* --- Item 1: Executive Overview --- */}
         <div className="sidebar-nav-item-wrap">
           <NavLink
             to="/"
@@ -168,44 +240,42 @@ export const Sidebar: React.FC = () => {
             className={({ isActive }) =>
               `sidebar-nav-item ${isActive ? 'active' : ''}`
             }
-            title={isCollapsed ? 'Dashboard' : undefined}
+            title={isCollapsed ? 'Executive Overview' : undefined}
           >
             <span className="sidebar-icon-box">
-              <LayoutGrid size={20} />
+              <ExecutiveOverviewIcon size={20} />
             </span>
-            {!isCollapsed && <span className="sidebar-item-label">Dashboard</span>}
+            {!isCollapsed && <span className="sidebar-item-label">Executive Overview</span>}
           </NavLink>
-          {isCollapsed && <div className="sidebar-tooltip">Dashboard</div>}
+          {isCollapsed && <div className="sidebar-tooltip">Executive Overview</div>}
         </div>
 
-        {/* --- Group 1: Market Discovery (Accordion with Tree Lines) --- */}
+        {/* --- Item 2: Price Discovery Engine (Accordion with Submenu) --- */}
         <div className="sidebar-nav-item-wrap">
           <button
             type="button"
             onClick={() => toggleGroup('discovery')}
             className={`sidebar-nav-item ${
-              isCurrentPath('/discovery') || isCurrentPath('/history') ? 'group-active' : ''
+              isCurrentPath('/discovery') ? 'group-active' : ''
             }`}
-            title={isCollapsed ? 'Market Discovery' : undefined}
+            title={isCollapsed ? 'Price Discovery Engine' : undefined}
           >
             <span className="sidebar-icon-box">
-              <FolderTree
+              <PriceDiscoveryIcon
                 size={20}
-                style={{
-                  color: isCurrentPath('/discovery') || isCurrentPath('/history') ? '#38BDF8' : 'currentColor'
-                }}
+                className={isCurrentPath('/discovery') ? 'text-info' : ''}
               />
             </span>
             {!isCollapsed && (
               <>
-                <span className="sidebar-item-label">Market Discovery</span>
+                <span className="sidebar-item-label">Price Discovery Engine</span>
                 <span className="sidebar-arrow-box">
                   {openGroups.discovery ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                 </span>
               </>
             )}
           </button>
-          {isCollapsed && <div className="sidebar-tooltip">Market Discovery</div>}
+          {isCollapsed && <div className="sidebar-tooltip">Price Discovery Engine</div>}
 
           {/* Tree sub-menu lines (when expanded) */}
           {!isCollapsed && openGroups.discovery && (
@@ -228,106 +298,77 @@ export const Sidebar: React.FC = () => {
               >
                 Bulk Excel BOM Upload
               </NavLink>
-
-              <NavLink
-                to="/history"
-                className={({ isActive }) =>
-                  `sidebar-tree-item ${isActive ? 'active' : ''}`
-                }
-              >
-                Search History
-              </NavLink>
             </div>
           )}
         </div>
 
-        {/* --- Group 2: Price Intelligence (Accordion with Tree Lines) --- */}
+        {/* --- Item 3: Supplier Benchmarking --- */}
         <div className="sidebar-nav-item-wrap">
-          <button
-            type="button"
-            onClick={() => toggleGroup('intelligence')}
-            className={`sidebar-nav-item ${
-              isCurrentPath('/comparison') || isCurrentPath('/reports') ? 'group-active' : ''
-            }`}
-            title={isCollapsed ? 'Price Intelligence' : undefined}
+          <NavLink
+            to="/comparison"
+            className={({ isActive }) =>
+              `sidebar-nav-item ${isActive ? 'active' : ''}`
+            }
+            title={isCollapsed ? 'Supplier Benchmarking' : undefined}
           >
             <span className="sidebar-icon-box">
-              <Cpu
-                size={20}
-                style={{
-                  color: isCurrentPath('/comparison') || isCurrentPath('/reports') ? '#38BDF8' : 'currentColor'
-                }}
-              />
+              <ArrowRightLeft size={20} />
             </span>
-            {!isCollapsed && (
-              <>
-                <span className="sidebar-item-label">Price Intelligence</span>
-                <span className="sidebar-arrow-box">
-                  {openGroups.intelligence ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-                </span>
-              </>
-            )}
-          </button>
-          {isCollapsed && <div className="sidebar-tooltip">Price Intelligence</div>}
-
-          {/* Tree sub-menu lines */}
-          {!isCollapsed && openGroups.intelligence && (
-            <div className="sidebar-tree-container">
-              <NavLink
-                to="/comparison"
-                className={({ isActive }) =>
-                  `sidebar-tree-item ${isActive ? 'active' : ''}`
-                }
-              >
-                Price Comparison Matrix
-              </NavLink>
-
-              <NavLink
-                to="/reports"
-                className={({ isActive }) =>
-                  `sidebar-tree-item ${isActive ? 'active' : ''}`
-                }
-              >
-                Research & Cost Reports
-              </NavLink>
-            </div>
-          )}
+            {!isCollapsed && <span className="sidebar-item-label">Supplier Benchmarking</span>}
+          </NavLink>
+          {isCollapsed && <div className="sidebar-tooltip">Supplier Benchmarking</div>}
         </div>
 
-        {/* --- Group 3: Settings & Admin (Accordion with Tree Lines) --- */}
+        {/* --- Item 4: RFQ & Negotiations --- */}
+        <div className="sidebar-nav-item-wrap">
+          <NavLink
+            to="/reports"
+            className={({ isActive }) =>
+              `sidebar-nav-item ${isActive ? 'active' : ''}`
+            }
+            title={isCollapsed ? 'RFQ & Negotiations' : undefined}
+          >
+            <span className="sidebar-icon-box">
+              <Gavel size={20} />
+            </span>
+            {!isCollapsed && <span className="sidebar-item-label">RFQ & Negotiations</span>}
+          </NavLink>
+          {isCollapsed && <div className="sidebar-tooltip">RFQ & Negotiations</div>}
+        </div>
+
+        {/* --- Item 5: Portal Connectors (Accordion with 7 Suppliers & Admin) --- */}
         <div className="sidebar-nav-item-wrap">
           <button
             type="button"
-            onClick={() => toggleGroup('admin')}
+            onClick={() => toggleGroup('connectors')}
             className={`sidebar-nav-item ${
               isCurrentPath('/suppliers') || isCurrentPath('/users') || isCurrentPath('/settings') ? 'group-active' : ''
             }`}
-            title={isCollapsed ? 'Settings & Admin' : undefined}
+            title={isCollapsed ? 'Portal Connectors' : undefined}
           >
             <span className="sidebar-icon-box">
-              <Settings
+              <PortalConnectorsIcon
                 size={20}
-                style={{
-                  color:
-                    isCurrentPath('/suppliers') || isCurrentPath('/users') || isCurrentPath('/settings')
-                      ? '#38BDF8'
-                      : 'currentColor'
-                }}
+                className={
+                  isCurrentPath('/suppliers') || isCurrentPath('/users') || isCurrentPath('/settings')
+                    ? 'text-info'
+                    : ''
+                }
               />
             </span>
             {!isCollapsed && (
               <>
-                <span className="sidebar-item-label">Settings & Admin</span>
+                <span className="sidebar-item-label">Portal Connectors</span>
                 <span className="sidebar-arrow-box">
-                  {openGroups.admin ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                  {openGroups.connectors ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                 </span>
               </>
             )}
           </button>
-          {isCollapsed && <div className="sidebar-tooltip">Settings & Admin</div>}
+          {isCollapsed && <div className="sidebar-tooltip">Portal Connectors</div>}
 
           {/* Tree sub-menu lines */}
-          {!isCollapsed && openGroups.admin && (
+          {!isCollapsed && openGroups.connectors && (
             <div className="sidebar-tree-container">
               <NavLink
                 to="/suppliers"
@@ -361,38 +402,21 @@ export const Sidebar: React.FC = () => {
           )}
         </div>
 
-        {/* --- Single Item: Notifications & Alerts --- */}
-        <div className="sidebar-nav-item-wrap">
-          <NavLink
-            to="/discovery"
-            className={({ isActive }) =>
-              `sidebar-nav-item ${isActive && location.search.includes('alerts') ? 'active' : ''}`
-            }
-            title={isCollapsed ? 'Notifications & Alerts' : undefined}
-          >
-            <span className="sidebar-icon-box">
-              <Bell size={20} />
-            </span>
-            {!isCollapsed && <span className="sidebar-item-label">Notifications & Alerts</span>}
-          </NavLink>
-          {isCollapsed && <div className="sidebar-tooltip">Notifications & Alerts</div>}
-        </div>
-
-        {/* --- Single Item: Archived Searches --- */}
+        {/* --- Item 6: Audit & Savings --- */}
         <div className="sidebar-nav-item-wrap">
           <NavLink
             to="/history"
             className={({ isActive }) =>
               `sidebar-nav-item ${isActive ? 'active' : ''}`
             }
-            title={isCollapsed ? 'Archived Searches' : undefined}
+            title={isCollapsed ? 'Audit & Savings' : undefined}
           >
             <span className="sidebar-icon-box">
-              <Trash2 size={20} />
+              <PiggyBank size={20} />
             </span>
-            {!isCollapsed && <span className="sidebar-item-label">Archived Searches</span>}
+            {!isCollapsed && <span className="sidebar-item-label">Audit & Savings</span>}
           </NavLink>
-          {isCollapsed && <div className="sidebar-tooltip">Archived Searches</div>}
+          {isCollapsed && <div className="sidebar-tooltip">Audit & Savings</div>}
         </div>
       </div>
     </aside>
