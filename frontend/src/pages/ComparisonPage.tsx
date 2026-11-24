@@ -56,7 +56,7 @@ export const ComparisonPage: React.FC = () => {
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
           <h4 className="fw-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Supplier Price Comparison & Benchmarking Matrix
+            Supplier Benchmarking — Multi-Portal Price Comparison Matrix
           </h4>
           <p className="text-secondary small mb-0">
             Multi-source industrial price benchmarking matrix with specification verification across 7 portals.

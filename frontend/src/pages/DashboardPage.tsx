@@ -61,7 +61,7 @@ export const DashboardPage: React.FC = () => {
               <span className="text-secondary small fw-medium">Direct Material Procurement Intelligence</span>
             </div>
             <h3 className="fw-bold mb-1.5" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-              Market Price Discovery & Supplier Benchmarking Engine
+              Executive Overview — Market Price Discovery & Procurement Dashboard
             </h3>
             <p className="text-secondary mb-3 small" style={{ maxWidth: 640, lineHeight: 1.45 }}>
               Automated multi-portal price intelligence across 7 industrial supplier networks. Real-time technical specification matching, multi-currency normalization to INR, and direct supplier verification links.

@@ -54,10 +54,10 @@ export const ReportsPage: React.FC = () => {
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
           <h4 className="fw-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Procurement Research Reports & Documentation
+            RFQ & Negotiations — Procurement Reports & Documentation
           </h4>
           <p className="text-secondary small mb-0">
-            Generate and download enterprise audit-ready Excel workbooks and executive PDF reports.
+            Generate and download enterprise audit-ready Excel workbooks and executive PDF reports for supplier price negotiations.
           </p>
         </div>
 

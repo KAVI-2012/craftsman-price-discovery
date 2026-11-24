@@ -98,7 +98,7 @@ export const DiscoveryPage: React.FC = () => {
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
           <h4 className="fw-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Market Price Discovery & Multi-Portal Research
+            Price Discovery Engine — Multi-Portal Market Research
           </h4>
           <p className="text-secondary small mb-0">
             Real-time multi-website research engine across 7 industrial supplier portals.

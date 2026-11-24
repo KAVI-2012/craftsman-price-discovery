@@ -99,7 +99,7 @@ export const SuppliersPage: React.FC = () => {
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
           <h4 className="fw-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Supplier Portal Configuration & Connectors
+            Portal Connectors — Supplier Gateway Configuration & Health
           </h4>
           <p className="text-secondary small mb-0">
             Manage, configure, and monitor connection reliability across all 7 industrial supplier portals.

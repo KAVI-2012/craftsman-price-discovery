@@ -41,7 +41,7 @@ export const HistoryPage: React.FC = () => {
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
           <h4 className="fw-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Search History & Price Discovery Audit Trail
+            Audit & Savings — Historical Price Discovery & Savings Audit Trail
           </h4>
           <p className="text-secondary small mb-0">
             Chronological audit log of all market price inquiries across Craftsman Automation procurement operations.
