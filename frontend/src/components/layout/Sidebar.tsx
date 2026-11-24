@@ -5,24 +5,13 @@ import {
   LayoutGrid,
   FolderTree,
   Cpu,
-  BarChart3,
   Settings,
   Bell,
   Trash2,
   ChevronDown,
   ChevronUp,
   ChevronLeft,
-  ChevronRight,
-  Search,
-  UploadCloud,
-  History,
-  Scale,
-  FileSpreadsheet,
-  Building2,
-  Users,
-  Activity,
-  Bot,
-  Sparkles
+  ChevronRight
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
@@ -74,119 +63,146 @@ export const Sidebar: React.FC = () => {
         zIndex: 100
       }}
     >
-      {/* 1. Header with Logo & Circular Toggle Button */}
-      <div
-        className="d-flex align-items-center justify-content-between p-3 border-bottom"
-        style={{
-          borderColor: 'rgba(255, 255, 255, 0.08)',
-          height: 64,
-          position: 'relative'
-        }}
-      >
-        <div className="d-flex align-items-center gap-2.5 overflow-hidden">
-          {/* Logo badge with white rounded card */}
-          <div
-            className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm"
-            style={{
-              width: 38,
-              height: 38,
-              background: '#FFFFFF',
-              borderRadius: 10,
-              padding: 4
-            }}
-          >
+      {/* 1. Header with Logo & Toggle Button */}
+      <div className={`sidebar-header ${isCollapsed ? 'collapsed' : ''}`}>
+        {isCollapsed ? (
+          /* Collapsed Header: Centered Logo + Centered Toggle Button (No overlap, perfectly aligned inside header) */
+          <>
             <div
-              className="w-100 h-100 rounded-2 d-flex align-items-center justify-content-center text-white"
+              className="rounded-3 d-flex align-items-center justify-content-center shadow-sm"
               style={{
-                background: 'linear-gradient(135deg, #1E40AF 0%, #06B6D4 100%)'
+                width: 38,
+                height: 38,
+                background: '#FFFFFF',
+                borderRadius: 10,
+                padding: 4,
+                margin: '0 auto',
+                flexShrink: 0
               }}
+              title="Craftsman Price Intelligence"
             >
-              <Cpu size={20} className="text-white" />
-            </div>
-          </div>
-
-          {/* Brand Name (Hidden when collapsed) */}
-          {!isCollapsed && (
-            <div className="text-truncate" style={{ lineHeight: 1.15 }}>
               <div
-                className="fw-bold tracking-tight text-white"
-                style={{ fontSize: '0.94rem', letterSpacing: '-0.01em' }}
+                className="w-100 h-100 rounded-2 d-flex align-items-center justify-content-center text-white"
+                style={{
+                  background: 'linear-gradient(135deg, #1E40AF 0%, #06B6D4 100%)'
+                }}
               >
-                CRAFTSMAN
-              </div>
-              <div
-                className="text-info fw-semibold"
-                style={{ fontSize: '0.67rem', letterSpacing: '0.08em' }}
-              >
-                PRICE INTELLIGENCE
+                <Cpu size={20} className="text-white" />
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Circular Toggle Button (< or >) */}
-        <button
-          type="button"
-          onClick={toggleSidebar}
-          className="sidebar-toggle-btn shadow-sm"
-          title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-          aria-label="Toggle Sidebar"
-        >
-          {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-        </button>
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="sidebar-toggle-btn shadow-sm"
+              title="Expand Sidebar"
+              aria-label="Expand Sidebar"
+              style={{ margin: '0 auto' }}
+            >
+              <ChevronRight size={14} />
+            </button>
+          </>
+        ) : (
+          /* Expanded Header: Logo + Brand Title + Collapse Button (<) */
+          <>
+            <div className="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1">
+              {/* Logo badge with white rounded card */}
+              <div
+                className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm"
+                style={{
+                  width: 38,
+                  height: 38,
+                  background: '#FFFFFF',
+                  borderRadius: 10,
+                  padding: 4
+                }}
+              >
+                <div
+                  className="w-100 h-100 rounded-2 d-flex align-items-center justify-content-center text-white"
+                  style={{
+                    background: 'linear-gradient(135deg, #1E40AF 0%, #06B6D4 100%)'
+                  }}
+                >
+                  <Cpu size={20} className="text-white" />
+                </div>
+              </div>
+
+              {/* Brand Name */}
+              <div className="text-truncate" style={{ lineHeight: 1.15 }}>
+                <div
+                  className="fw-bold tracking-tight text-white"
+                  style={{ fontSize: '0.94rem', letterSpacing: '-0.01em' }}
+                >
+                  CRAFTSMAN
+                </div>
+                <div
+                  className="fw-semibold"
+                  style={{ fontSize: '0.67rem', letterSpacing: '0.08em', color: '#38BDF8' }}
+                >
+                  PRICE INTELLIGENCE
+                </div>
+              </div>
+            </div>
+
+            {/* Circular Collapse Button (<) */}
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="sidebar-toggle-btn shadow-sm"
+              title="Collapse Sidebar"
+              aria-label="Collapse Sidebar"
+            >
+              <ChevronLeft size={14} />
+            </button>
+          </>
+        )}
       </div>
 
-      {/* 2. Navigation List Container */}
-      <div className="p-3 flex-grow-1 overflow-auto d-flex flex-column gap-2.5">
+      {/* 2. Navigation List Container (Uses full vertical space) */}
+      <div className="sidebar-nav-container">
         {/* --- Top Nav: Dashboard --- */}
-        <div className="position-relative collapsed-item-wrap">
+        <div className="sidebar-nav-item-wrap">
           <NavLink
             to="/"
+            end
             className={({ isActive }) =>
-              `nav-link d-flex align-items-center ${
-                isCollapsed ? 'justify-content-center' : 'justify-content-start'
-              } gap-3 px-3 py-2.5 text-decoration-none transition-all ${
-                isActive ? 'nav-active-pill' : 'text-secondary hover-bg'
-              }`
+              `sidebar-nav-item ${isActive ? 'active' : ''}`
             }
-            style={({ isActive }) => ({
-              backgroundColor: isActive ? '#2563EB' : 'transparent',
-              color: isActive ? '#FFFFFF' : '#94A3B8',
-              borderRadius: 12,
-              fontWeight: isActive ? 600 : 500,
-              fontSize: '0.88rem'
-            })}
+            title={isCollapsed ? 'Dashboard' : undefined}
           >
-            <LayoutGrid size={19} className="flex-shrink-0" />
-            {!isCollapsed && <span>Dashboard</span>}
+            <span className="sidebar-icon-box">
+              <LayoutGrid size={20} />
+            </span>
+            {!isCollapsed && <span className="sidebar-item-label">Dashboard</span>}
           </NavLink>
           {isCollapsed && <div className="sidebar-tooltip">Dashboard</div>}
         </div>
 
         {/* --- Group 1: Market Discovery (Accordion with Tree Lines) --- */}
-        <div className="position-relative collapsed-item-wrap">
+        <div className="sidebar-nav-item-wrap">
           <button
             type="button"
             onClick={() => toggleGroup('discovery')}
-            className={`sidebar-group-btn ${
-              isCollapsed ? 'justify-content-center px-0' : ''
-            } ${isCurrentPath('/discovery') || isCurrentPath('/history') ? 'text-white' : ''}`}
+            className={`sidebar-nav-item ${
+              isCurrentPath('/discovery') || isCurrentPath('/history') ? 'group-active' : ''
+            }`}
             title={isCollapsed ? 'Market Discovery' : undefined}
           >
-            <div className="d-flex align-items-center gap-3">
+            <span className="sidebar-icon-box">
               <FolderTree
-                size={19}
+                size={20}
                 style={{
-                  color: isCurrentPath('/discovery') || isCurrentPath('/history') ? '#38BDF8' : '#94A3B8'
+                  color: isCurrentPath('/discovery') || isCurrentPath('/history') ? '#38BDF8' : 'currentColor'
                 }}
-                className="flex-shrink-0"
               />
-              {!isCollapsed && <span>Market Discovery</span>}
-            </div>
+            </span>
             {!isCollapsed && (
-              <span className="text-secondary opacity-75">
-                {openGroups.discovery ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-              </span>
+              <>
+                <span className="sidebar-item-label">Market Discovery</span>
+                <span className="sidebar-arrow-box">
+                  {openGroups.discovery ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                </span>
+              </>
             )}
           </button>
           {isCollapsed && <div className="sidebar-tooltip">Market Discovery</div>}
@@ -198,7 +214,7 @@ export const Sidebar: React.FC = () => {
                 to="/discovery"
                 end
                 className={({ isActive }) =>
-                  `sidebar-tree-item ${isActive ? 'active' : ''}`
+                  `sidebar-tree-item ${isActive && !location.search.includes('mode=excel') ? 'active' : ''}`
                 }
               >
                 Item Price Search
@@ -226,29 +242,30 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* --- Group 2: Price Intelligence (Accordion with Tree Lines) --- */}
-        <div className="position-relative collapsed-item-wrap">
+        <div className="sidebar-nav-item-wrap">
           <button
             type="button"
             onClick={() => toggleGroup('intelligence')}
-            className={`sidebar-group-btn ${
-              isCollapsed ? 'justify-content-center px-0' : ''
-            } ${isCurrentPath('/comparison') || isCurrentPath('/reports') ? 'text-white' : ''}`}
+            className={`sidebar-nav-item ${
+              isCurrentPath('/comparison') || isCurrentPath('/reports') ? 'group-active' : ''
+            }`}
             title={isCollapsed ? 'Price Intelligence' : undefined}
           >
-            <div className="d-flex align-items-center gap-3">
+            <span className="sidebar-icon-box">
               <Cpu
-                size={19}
+                size={20}
                 style={{
-                  color: isCurrentPath('/comparison') || isCurrentPath('/reports') ? '#38BDF8' : '#94A3B8'
+                  color: isCurrentPath('/comparison') || isCurrentPath('/reports') ? '#38BDF8' : 'currentColor'
                 }}
-                className="flex-shrink-0"
               />
-              {!isCollapsed && <span>Price Intelligence</span>}
-            </div>
+            </span>
             {!isCollapsed && (
-              <span className="text-secondary opacity-75">
-                {openGroups.intelligence ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-              </span>
+              <>
+                <span className="sidebar-item-label">Price Intelligence</span>
+                <span className="sidebar-arrow-box">
+                  {openGroups.intelligence ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                </span>
+              </>
             )}
           </button>
           {isCollapsed && <div className="sidebar-tooltip">Price Intelligence</div>}
@@ -278,32 +295,33 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* --- Group 3: Settings & Admin (Accordion with Tree Lines) --- */}
-        <div className="position-relative collapsed-item-wrap">
+        <div className="sidebar-nav-item-wrap">
           <button
             type="button"
             onClick={() => toggleGroup('admin')}
-            className={`sidebar-group-btn ${
-              isCollapsed ? 'justify-content-center px-0' : ''
-            } ${isCurrentPath('/suppliers') || isCurrentPath('/users') || isCurrentPath('/settings') ? 'text-white' : ''}`}
+            className={`sidebar-nav-item ${
+              isCurrentPath('/suppliers') || isCurrentPath('/users') || isCurrentPath('/settings') ? 'group-active' : ''
+            }`}
             title={isCollapsed ? 'Settings & Admin' : undefined}
           >
-            <div className="d-flex align-items-center gap-3">
+            <span className="sidebar-icon-box">
               <Settings
-                size={19}
+                size={20}
                 style={{
                   color:
                     isCurrentPath('/suppliers') || isCurrentPath('/users') || isCurrentPath('/settings')
                       ? '#38BDF8'
-                      : '#94A3B8'
+                      : 'currentColor'
                 }}
-                className="flex-shrink-0"
               />
-              {!isCollapsed && <span>Settings & Admin</span>}
-            </div>
+            </span>
             {!isCollapsed && (
-              <span className="text-secondary opacity-75">
-                {openGroups.admin ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-              </span>
+              <>
+                <span className="sidebar-item-label">Settings & Admin</span>
+                <span className="sidebar-arrow-box">
+                  {openGroups.admin ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                </span>
+              </>
             )}
           </button>
           {isCollapsed && <div className="sidebar-tooltip">Settings & Admin</div>}
@@ -343,113 +361,39 @@ export const Sidebar: React.FC = () => {
           )}
         </div>
 
-        {/* --- Single Item: Price Alerts / Notifications --- */}
-        <div className="position-relative collapsed-item-wrap">
+        {/* --- Single Item: Notifications & Alerts --- */}
+        <div className="sidebar-nav-item-wrap">
           <NavLink
             to="/discovery"
             className={({ isActive }) =>
-              `sidebar-group-btn text-decoration-none ${
-                isCollapsed ? 'justify-content-center px-0' : ''
-              }`
+              `sidebar-nav-item ${isActive && location.search.includes('alerts') ? 'active' : ''}`
             }
+            title={isCollapsed ? 'Notifications & Alerts' : undefined}
           >
-            <div className="d-flex align-items-center gap-3">
-              <Bell size={19} className="text-secondary flex-shrink-0" />
-              {!isCollapsed && <span>Notifications & Alerts</span>}
-            </div>
+            <span className="sidebar-icon-box">
+              <Bell size={20} />
+            </span>
+            {!isCollapsed && <span className="sidebar-item-label">Notifications & Alerts</span>}
           </NavLink>
           {isCollapsed && <div className="sidebar-tooltip">Notifications & Alerts</div>}
         </div>
 
-        {/* --- Single Item: History / Archive --- */}
-        <div className="position-relative collapsed-item-wrap">
+        {/* --- Single Item: Archived Searches --- */}
+        <div className="sidebar-nav-item-wrap">
           <NavLink
             to="/history"
             className={({ isActive }) =>
-              `sidebar-group-btn text-decoration-none ${
-                isCollapsed ? 'justify-content-center px-0' : ''
-              }`
+              `sidebar-nav-item ${isActive ? 'active' : ''}`
             }
+            title={isCollapsed ? 'Archived Searches' : undefined}
           >
-            <div className="d-flex align-items-center gap-3">
-              <Trash2 size={19} className="text-secondary flex-shrink-0" />
-              {!isCollapsed && <span>Archived Searches</span>}
-            </div>
+            <span className="sidebar-icon-box">
+              <Trash2 size={20} />
+            </span>
+            {!isCollapsed && <span className="sidebar-item-label">Archived Searches</span>}
           </NavLink>
           {isCollapsed && <div className="sidebar-tooltip">Archived Searches</div>}
         </div>
-      </div>
-
-      {/* 3. Bottom 3D AI Robot / Mascot Widget (from Sample Design!) */}
-      <div className="p-3 border-top" style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}>
-        {isCollapsed ? (
-          /* Collapsed Mini Bot Avatar */
-          <div
-            className="d-flex justify-content-center align-items-center position-relative collapsed-item-wrap"
-            style={{ height: 48 }}
-          >
-            <div
-              className="rounded-circle d-flex align-items-center justify-content-center shadow"
-              style={{
-                width: 42,
-                height: 42,
-                background: 'linear-gradient(135deg, #1E40AF 0%, #06B6D4 100%)',
-                border: '2px solid rgba(56, 189, 248, 0.5)'
-              }}
-            >
-              <Bot size={22} className="text-white" />
-            </div>
-            {/* Pulsing online green dot */}
-            <span
-              className="position-absolute rounded-circle"
-              style={{
-                width: 9,
-                height: 9,
-                background: '#10B981',
-                bottom: 2,
-                right: 14,
-                border: '2px solid #080E24'
-              }}
-            ></span>
-            <div className="sidebar-tooltip">AI Discovery Engine: Online</div>
-          </div>
-        ) : (
-          /* Expanded Full AI Mascot Card */
-          <div className="ai-mascot-container p-2.5 d-flex align-items-center gap-2.5">
-            {/* Robot 3D Badge Avatar */}
-            <div
-              className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow"
-              style={{
-                width: 42,
-                height: 42,
-                background: 'linear-gradient(135deg, #1E40AF 0%, #06B6D4 100%)',
-                border: '2px solid rgba(56, 189, 248, 0.4)'
-              }}
-            >
-              <Bot size={22} className="text-white" />
-            </div>
-
-            <div className="flex-grow-1 overflow-hidden" style={{ lineHeight: 1.2 }}>
-              <div className="d-flex align-items-center gap-1.5">
-                <span className="fw-bold text-white small" style={{ fontSize: '0.8rem' }}>
-                  AI Price Agent
-                </span>
-                <span
-                  className="rounded-circle"
-                  style={{
-                    width: 7,
-                    height: 7,
-                    backgroundColor: '#10B981',
-                    display: 'inline-block'
-                  }}
-                ></span>
-              </div>
-              <div className="text-secondary small text-truncate" style={{ fontSize: '0.68rem' }}>
-                7/7 Portals Listening • Live
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </aside>
   );

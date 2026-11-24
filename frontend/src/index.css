@@ -503,43 +503,61 @@ body {
    -------------------------------------------------------------------------- */
 @media (max-width: 992px) {
   .sidebar-wrapper {
-    width: 72px;
-    min-width: 72px;
+    width: 76px !important;
+    min-width: 76px !important;
   }
-  .sidebar-wrapper .sidebar-label,
-  .sidebar-wrapper .sidebar-badge,
-  .sidebar-wrapper .brand-details,
-  .sidebar-wrapper .engine-widget {
+  .sidebar-wrapper .sidebar-item-label,
+  .sidebar-wrapper .sidebar-arrow-box,
+  .sidebar-wrapper .sidebar-tree-container {
     display: none !important;
-  }
-  .sidebar-wrapper .brand-header {
-    justify-content: center !important;
-    padding: 0.75rem !important;
-  }
-  .sidebar-wrapper .nav-link {
-    justify-content: center !important;
-    padding: 0.75rem 0.5rem !important;
   }
 }
 
 /* --------------------------------------------------------------------------
-   ENTERPRISE MODERN COLLAPSIBLE SIDEBAR WITH TREE HIERARCHY (SAMPLE DESIGN)
+   ENTERPRISE MODERN COLLAPSIBLE SIDEBAR WITH TREE HIERARCHY
    -------------------------------------------------------------------------- */
 .sidebar-wrapper {
   background: #080E24 !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
   transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-wrapper.collapsed {
   width: 76px !important;
   min-width: 76px !important;
+  max-width: 76px !important;
 }
 
+/* Sidebar Header */
+.sidebar-header {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar-header.collapsed {
+  height: auto;
+  min-height: 98px;
+  padding: 16px 8px 14px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Circular Toggle Button */
 .sidebar-toggle-btn {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #141E38;
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -559,41 +577,131 @@ body {
   box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
 }
 
-.nav-active-pill {
-  background: #2563EB !important;
-  color: #FFFFFF !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+/* Navigation List Container */
+.sidebar-nav-container {
+  padding: 14px 12px;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.sidebar-group-btn {
+.sidebar-wrapper.collapsed .sidebar-nav-container {
+  padding: 14px 8px;
+  align-items: center;
+}
+
+/* Sidebar Nav Item Wrapper */
+.sidebar-nav-item-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+/* Sidebar Nav Item Button / Link */
+.sidebar-nav-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
-  padding: 9px 12px;
+  padding: 10px 14px;
   border-radius: 10px;
   border: none;
   background: transparent;
   color: #CBD5E1;
   font-weight: 500;
   font-size: 0.88rem;
-  transition: background 0.18s, color 0.18s;
+  text-decoration: none;
+  transition: all 0.18s ease;
   cursor: pointer;
   text-align: left;
+  box-sizing: border-box;
 }
 
-.sidebar-group-btn:hover {
+.sidebar-nav-item:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #FFFFFF;
 }
 
+/* Active NavLink Pill (like Dashboard) */
+.sidebar-nav-item.active {
+  background: #2563EB !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar-nav-item.group-active {
+  color: #FFFFFF;
+}
+
+/* Fixed width icon box ensuring pixel-perfect alignment across all items */
+.sidebar-icon-box {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 12px;
+  color: #94A3B8;
+  transition: color 0.18s ease;
+}
+
+.sidebar-nav-item:hover .sidebar-icon-box {
+  color: #FFFFFF;
+}
+
+.sidebar-nav-item.active .sidebar-icon-box {
+  color: #FFFFFF !important;
+}
+
+/* Item label text */
+.sidebar-item-label {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+/* Right-aligned dropdown chevron */
+.sidebar-arrow-box {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  opacity: 0.75;
+  flex-shrink: 0;
+  transition: opacity 0.18s ease, color 0.18s ease;
+}
+
+.sidebar-nav-item:hover .sidebar-arrow-box {
+  opacity: 1;
+  color: #FFFFFF;
+}
+
+/* Collapsed Mode Item Centering */
+.sidebar-wrapper.collapsed .sidebar-nav-item {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.sidebar-wrapper.collapsed .sidebar-icon-box {
+  margin-right: 0;
+}
+
+/* Tree sub-menu lines (when expanded) */
 .sidebar-tree-container {
   position: relative;
-  margin-left: 26px;
+  margin-left: 25px;
   padding-left: 14px;
   margin-top: 4px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   border-left: 1.5px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -607,6 +715,7 @@ body {
   font-size: 0.82rem;
   font-weight: 400;
   transition: all 0.18s ease;
+  margin-bottom: 3px;
 }
 
 .sidebar-tree-item::before {
@@ -634,36 +743,27 @@ body {
   background: #38BDF8;
 }
 
+/* Floating Tooltips in Collapsed Mode */
 .sidebar-tooltip {
   position: absolute;
-  left: 78px;
+  left: 72px;
+  top: 50%;
+  transform: translateY(-50%);
   background: #0F172A;
   border: 1px solid #334155;
   color: #F8FAFC;
-  padding: 4px 9px;
+  padding: 5px 10px;
   border-radius: 6px;
-  font-size: 0.74rem;
+  font-size: 0.76rem;
+  font-weight: 500;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
   z-index: 1000;
   opacity: 0;
   transition: opacity 0.15s ease;
 }
 
-.collapsed-item-wrap:hover .sidebar-tooltip {
+.sidebar-nav-item-wrap:hover .sidebar-tooltip {
   opacity: 1;
-}
-
-/* AI Mascot Bot styling */
-.ai-mascot-container {
-  background: linear-gradient(135deg, rgba(30, 64, 175, 0.15) 0%, rgba(6, 182, 212, 0.12) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  border-radius: 12px;
-  transition: all 0.2s ease;
-}
-
-.ai-mascot-container:hover {
-  border-color: rgba(56, 189, 248, 0.45);
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.15);
 }
