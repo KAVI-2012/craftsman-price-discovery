@@ -172,18 +172,26 @@ class ExcelBOMService:
         ws.title = "Price_Intelligence_Summary"
 
         headers = [
-            "Row #",
-            "ITEM_CODE",
-            "ITEM_DESC",
-            "Cleaned Query / Part No",
-            "Best Offer Price (INR)",
-            "Common UOM",
-            "Best Supplier Portal",
-            "Average Market Price (INR)",
-            "Highest Listed Price (INR)",
-            "Potential Savings (%)",
-            "Match Classification",
-            "Verified Product URL"
+            "SL_NO",
+            "CLIENT_ITEM_CODE",
+            "CLIENT_ITEM_DESC",
+            "EXTRACTED_PART_NO",
+            "BEST_PRODUCT_TITLE",
+            "BEST_PRODUCT_COMPANY",
+            "BEST_SUPPLIER_PORTAL",
+            "BEST_PRICE_INR",
+            "UOM",
+            "INDIAMART_PRICE",
+            "MOGLIX_PRICE",
+            "INDUSTRYBUYING_PRICE",
+            "RS_COMPONENTS_PRICE",
+            "MISUMI_PRICE",
+            "GRAINGER_PRICE",
+            "CRAFTSMAN_OEM_PRICE",
+            "AVG_MARKET_PRICE",
+            "POTENTIAL_SAVINGS_INR",
+            "SAVINGS_PERCENT",
+            "PURCHASE_URL"
         ]
         ws.append(headers)
 
@@ -195,7 +203,9 @@ class ExcelBOMService:
             top=Side(style='thin', color='E2E8F0'),
             bottom=Side(style='thin', color='E2E8F0')
         )
+        link_font = Font(name="Calibri", size=10, color="2563EB", underline="single")
 
+        ws.row_dimensions[1].height = 28
         for col_idx in range(1, len(headers) + 1):
             cell = ws.cell(row=1, column=col_idx)
             cell.fill = header_fill
@@ -205,31 +215,70 @@ class ExcelBOMService:
         for r_idx, item in enumerate(batch_results, start=2):
             lowest = item.get("lowest_price")
             avg_p = item.get("average_price")
-            highest = item.get("highest_price")
-            savings_pct = item.get("potential_savings_percentage", 0.0)
+            savings_amt = item.get("potential_savings_amount")
+            if savings_amt is None and avg_p is not None and lowest is not None:
+                savings_amt = max(0.0, avg_p - lowest)
+            savings_pct = item.get("potential_savings_percentage")
+            if savings_pct is None and avg_p and avg_p > 0 and savings_amt:
+                savings_pct = round((savings_amt / avg_p) * 100, 1)
 
-            ws.append([
+            # Supplier quotes
+            im_p = item.get("indiamart_price")
+            mg_p = item.get("moglix_price")
+            ib_p = item.get("industrybuying_price")
+            rs_p = item.get("rs_components_price")
+            ms_p = item.get("misumi_price")
+            gr_p = item.get("grainger_price")
+            cf_p = item.get("craftsman_oem_price")
+
+            row_data = [
                 r_idx - 1,
                 item.get("item_code", ""),
                 item.get("raw_description", ""),
-                item.get("clean_query", ""),
+                item.get("part_number") or item.get("extracted_part_number") or item.get("clean_query", ""),
+                item.get("best_product_title") or item.get("clean_query") or item.get("raw_description", ""),
+                item.get("best_product_company") or item.get("manufacturer") or "Craftsman OEM / Industrial",
+                item.get("best_supplier", "N/A"),
                 lowest if lowest is not None else "RFQ Required",
                 item.get("common_uom", "Piece"),
-                item.get("best_supplier", "N/A"),
+                im_p if im_p is not None else "-",
+                mg_p if mg_p is not None else "-",
+                ib_p if ib_p is not None else "-",
+                rs_p if rs_p is not None else "-",
+                ms_p if ms_p is not None else "-",
+                gr_p if gr_p is not None else "-",
+                cf_p if cf_p is not None else "-",
                 avg_p if avg_p is not None else "-",
-                highest if highest is not None else "-",
-                f"{savings_pct}%" if savings_pct else "0%",
-                item.get("match_classification", "Verified Match"),
-                item.get("direct_link", "")
-            ])
+                round(float(savings_amt), 2) if savings_amt is not None else 0.0,
+                f"{savings_pct}%" if savings_pct is not None else "0.0%",
+                item.get("direct_link") or item.get("source_url", "")
+            ]
+            ws.append(row_data)
 
-            # Row zebra striping
+            # Row zebra striping & cell styling
             row_fill = PatternFill(start_color="F8FAFC" if r_idx % 2 == 0 else "FFFFFF", fill_type="solid")
             for c_idx in range(1, len(headers) + 1):
                 cell = ws.cell(row=r_idx, column=c_idx)
                 cell.fill = row_fill
                 cell.border = thin_border
                 cell.font = Font(name="Calibri", size=10)
+
+                # Format numeric currency columns
+                if c_idx in [8, 10, 11, 12, 13, 14, 15, 16, 17, 18]:
+                    if isinstance(cell.value, (int, float)):
+                        cell.number_format = '₹#,##0.00'
+                        cell.alignment = Alignment(horizontal="right", vertical="center")
+                    else:
+                        cell.alignment = Alignment(horizontal="center", vertical="center")
+                elif c_idx == 1:
+                    cell.alignment = Alignment(horizontal="center", vertical="center")
+                elif c_idx == 20: # URL
+                    url_str = str(cell.value or "")
+                    if url_str.startswith("http"):
+                        cell.hyperlink = url_str
+                        cell.font = link_font
+                        cell.value = "Direct Supplier Link"
+                        cell.alignment = Alignment(horizontal="center", vertical="center")
 
         # Auto-adjust column widths
         for col in ws.columns:

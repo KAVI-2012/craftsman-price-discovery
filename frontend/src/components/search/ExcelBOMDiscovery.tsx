@@ -29,6 +29,8 @@ interface BatchResultItem {
   raw_description: string;
   clean_query: string;
   part_number: string;
+  best_product_title?: string;
+  best_product_company?: string;
   search_id: number | null;
   status: string;
   lowest_price: number | null;
@@ -42,6 +44,13 @@ interface BatchResultItem {
   direct_link: string;
   match_classification: string;
   match_confidence: number;
+  indiamart_price?: number | null;
+  moglix_price?: number | null;
+  industrybuying_price?: number | null;
+  rs_components_price?: number | null;
+  misumi_price?: number | null;
+  grainger_price?: number | null;
+  craftsman_oem_price?: number | null;
 }
 
 interface ExcelBOMDiscoveryProps {
@@ -390,20 +399,23 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
             <table className="table table-hover mb-0 craftsman-table align-middle" style={{ fontSize: '0.82rem' }}>
               <thead>
                 <tr>
-                  <th style={{ width: 50 }}>#</th>
-                  <th style={{ width: 140 }}>ITEM_CODE</th>
-                  <th>ITEM_DESC (Uploaded)</th>
-                  <th>Cleaned Search Query</th>
+                  <th style={{ width: 45 }}>#</th>
+                  <th style={{ width: 140 }}>CLIENT_ITEM_CODE</th>
+                  <th>CLIENT_ITEM_DESC</th>
                   {batchResults.length > 0 ? (
                     <>
-                      <th>Best Market Price</th>
-                      <th>Best Supplier Portal</th>
-                      <th>Avg Market Price</th>
-                      <th>Savings</th>
-                      <th className="text-end">Verification & Action</th>
+                      <th>BEST_PRODUCT / COMPANY</th>
+                      <th>BEST_PRICE (INR)</th>
+                      <th>BEST_PORTAL</th>
+                      <th>AVG_MARKET_PRICE</th>
+                      <th>SAVINGS</th>
+                      <th className="text-end">ACTION</th>
                     </>
                   ) : (
-                    <th>Extracted Part Code</th>
+                    <>
+                      <th>Cleaned Search Query</th>
+                      <th>Extracted Part Code</th>
+                    </>
                   )}
                 </tr>
               </thead>
@@ -418,15 +430,20 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
                           {item.item_code}
                         </span>
                       </td>
-                      <td className="fw-semibold text-truncate" style={{ maxWidth: 260 }} title={item.raw_description}>
+                      <td className="fw-semibold text-truncate" style={{ maxWidth: 240 }} title={item.raw_description}>
                         {item.raw_description}
-                      </td>
-                      <td className="text-info text-truncate" style={{ maxWidth: 220 }} title={item.clean_query}>
-                        {item.clean_query}
                       </td>
 
                       {batchResults.length > 0 ? (
                         <>
+                          <td style={{ maxWidth: 220 }}>
+                            <div className="fw-semibold text-truncate" title={result?.best_product_title || item.clean_query}>
+                              {result?.best_product_title || item.clean_query}
+                            </div>
+                            <small className="text-secondary" style={{ fontSize: '0.72rem' }}>
+                              {result?.best_product_company || 'Craftsman OEM'}
+                            </small>
+                          </td>
                           <td>
                             {result?.lowest_price ? (
                               <div className="fw-bold text-success">
@@ -489,15 +506,20 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
                           </td>
                         </>
                       ) : (
-                        <td>
-                          {item.extracted_part_number ? (
-                            <span className="badge bg-info-subtle text-info border border-info-subtle mono">
-                              {item.extracted_part_number}
-                            </span>
-                          ) : (
-                            <span className="text-muted small">Generic Desc</span>
-                          )}
-                        </td>
+                        <>
+                          <td className="text-info text-truncate" style={{ maxWidth: 220 }} title={item.clean_query}>
+                            {item.clean_query}
+                          </td>
+                          <td>
+                            {item.extracted_part_number ? (
+                              <span className="badge bg-info-subtle text-info border border-info-subtle mono">
+                                {item.extracted_part_number}
+                              </span>
+                            ) : (
+                              <span className="text-muted small">Generic Desc</span>
+                            )}
+                          </td>
+                        </>
                       )}
                     </tr>
                   );

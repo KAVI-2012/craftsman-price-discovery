@@ -319,29 +319,65 @@ async def batch_search_items(
             )
             best_supp = "Multiple"
             best_link = ""
+            best_product_title = q
+            best_product_company = "Craftsman OEM / Industrial"
+            supplier_prices = {
+                "indiamart_price": None,
+                "moglix_price": None,
+                "industrybuying_price": None,
+                "rs_components_price": None,
+                "misumi_price": None,
+                "grainger_price": None,
+                "craftsman_oem_price": None
+            }
+
             if res.items:
                 top_item = res.items[0]
                 best_supp = top_item.supplier_name
                 best_link = top_item.source_url
+                best_product_title = top_item.product_name or q
+                best_product_company = top_item.manufacturer or "Craftsman OEM / Industrial"
+
+                for itm in res.items:
+                    s_name = (itm.supplier_name or "").lower()
+                    p_val = itm.price_info.normalized_price_inr if itm.price_info else None
+                    if p_val is not None and p_val > 0:
+                        if "indiamart" in s_name:
+                            supplier_prices["indiamart_price"] = p_val
+                        elif "moglix" in s_name:
+                            supplier_prices["moglix_price"] = p_val
+                        elif "industrybuying" in s_name:
+                            supplier_prices["industrybuying_price"] = p_val
+                        elif "rs" in s_name:
+                            supplier_prices["rs_components_price"] = p_val
+                        elif "misumi" in s_name:
+                            supplier_prices["misumi_price"] = p_val
+                        elif "grainger" in s_name:
+                            supplier_prices["grainger_price"] = p_val
+                        elif "craftsman" in s_name or "oem" in s_name:
+                            supplier_prices["craftsman_oem_price"] = p_val
 
             batch_results.append({
                 "item_code": item.item_code,
                 "raw_description": item.raw_description or "",
                 "clean_query": q,
                 "part_number": pn,
+                "best_product_title": best_product_title,
+                "best_product_company": best_product_company,
                 "search_id": res.search_id,
                 "status": "COMPLETED",
                 "lowest_price": res.lowest_price,
                 "average_price": res.average_price,
                 "highest_price": res.highest_price,
-                "potential_savings_amount": res.potential_savings_amount,
-                "potential_savings_percentage": res.potential_savings_percentage,
-                "common_uom": res.common_uom,
+                "potential_savings_amount": res.potential_savings_amount or 0.0,
+                "potential_savings_percentage": res.potential_savings_percentage or 0.0,
+                "common_uom": res.common_uom or "Piece",
                 "best_supplier": best_supp,
                 "suppliers_succeeded": res.successful_suppliers_count,
                 "direct_link": best_link,
                 "match_classification": res.items[0].match_classification if res.items else "Verified Match",
-                "match_confidence": res.items[0].match_confidence if res.items else 0.0
+                "match_confidence": res.items[0].match_confidence if res.items else 0.0,
+                **supplier_prices
             })
         except Exception as e:
             batch_results.append({

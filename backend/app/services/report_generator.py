@@ -66,19 +66,20 @@ class ReportGenerator:
 
         # Table Headers
         headers = [
-            "Supplier Name",
-            "Product Description",
-            "Part Number",
-            "Manufacturer",
-            "Listed Price",
-            "Original UOM",
-            "Normalized Price (INR)",
-            "Common UOM",
-            "UOM Status",
-            "Match Score",
-            "Match Grade",
-            "Availability",
-            "Direct Supplier URL"
+            "SL_NO",
+            "SUPPLIER_PORTAL",
+            "PRODUCT_TITLE",
+            "PART_NUMBER",
+            "MANUFACTURER_COMPANY",
+            "LISTED_PRICE",
+            "ORIGINAL_UOM",
+            "NORMALIZED_PRICE_INR",
+            "COMMON_UOM",
+            "UOM_STATUS",
+            "MATCH_SCORE",
+            "MATCH_GRADE",
+            "AVAILABILITY",
+            "PURCHASE_URL"
         ]
 
         row_idx = 6
@@ -92,41 +93,42 @@ class ReportGenerator:
 
         # Table Rows
         lowest_val = search_data.get("lowest_price")
-        for item in items:
+        for sl_no, item in enumerate(items, 1):
             row_idx += 1
             price_info = item.get("price_info", {})
             inr_val = price_info.get("normalized_price_inr", 0.0)
             is_norm = price_info.get("is_uom_normalized", True)
             is_lowest = (lowest_val is not None and is_norm and inr_val and abs(inr_val - lowest_val) < 0.01)
 
-            ws.cell(row=row_idx, column=1, value=item.get("supplier_name")).font = bold_font
-            ws.cell(row=row_idx, column=2, value=item.get("product_name")).font = regular_font
-            ws.cell(row=row_idx, column=3, value=item.get("part_number") or "N/A").font = regular_font
-            ws.cell(row=row_idx, column=4, value=item.get("manufacturer") or "N/A").font = regular_font
+            ws.cell(row=row_idx, column=1, value=sl_no).font = regular_font
+            ws.cell(row=row_idx, column=2, value=item.get("supplier_name")).font = bold_font
+            ws.cell(row=row_idx, column=3, value=item.get("product_name")).font = regular_font
+            ws.cell(row=row_idx, column=4, value=item.get("part_number") or "N/A").font = regular_font
+            ws.cell(row=row_idx, column=5, value=item.get("manufacturer") or "N/A").font = regular_font
             
             orig_p_str = f"{price_info.get('currency', 'INR')} {price_info.get('original_price', 0.0):,.2f}" if price_info.get('original_price') is not None else "N/A"
-            ws.cell(row=row_idx, column=5, value=orig_p_str).font = regular_font
-            ws.cell(row=row_idx, column=6, value=price_info.get("original_uom", "Unit")).font = regular_font
+            ws.cell(row=row_idx, column=6, value=orig_p_str).font = regular_font
+            ws.cell(row=row_idx, column=7, value=price_info.get("original_uom", "Unit")).font = regular_font
             
             if is_norm and inr_val:
-                p_cell = ws.cell(row=row_idx, column=7, value=inr_val)
+                p_cell = ws.cell(row=row_idx, column=8, value=inr_val)
                 p_cell.font = bold_font
-                p_cell.number_format = '#,##0.00'
+                p_cell.number_format = '₹#,##0.00'
             else:
-                p_cell = ws.cell(row=row_idx, column=7, value="Not Available")
+                p_cell = ws.cell(row=row_idx, column=8, value="Not Available")
                 p_cell.font = bold_font
 
-            ws.cell(row=row_idx, column=8, value=price_info.get("common_uom", common_uom)).font = regular_font
-            ws.cell(row=row_idx, column=9, value=price_info.get("uom_conversion_status", "Exact UOM Match")).font = regular_font
-            ws.cell(row=row_idx, column=10, value=f"{item.get('match_confidence', 0)}%").font = regular_font
-            ws.cell(row=row_idx, column=11, value=item.get("match_classification")).font = regular_font
-            ws.cell(row=row_idx, column=12, value=price_info.get("availability", "In Stock")).font = regular_font
+            ws.cell(row=row_idx, column=9, value=price_info.get("common_uom", common_uom)).font = regular_font
+            ws.cell(row=row_idx, column=10, value=price_info.get("uom_conversion_status", "Exact UOM Match")).font = regular_font
+            ws.cell(row=row_idx, column=11, value=f"{item.get('match_confidence', 0)}%").font = regular_font
+            ws.cell(row=row_idx, column=12, value=item.get("match_classification")).font = regular_font
+            ws.cell(row=row_idx, column=13, value=price_info.get("availability", "In Stock")).font = regular_font
 
-            url_cell = ws.cell(row=row_idx, column=13, value="Open Supplier Link")
+            url_cell = ws.cell(row=row_idx, column=14, value="Open Supplier Link")
             url_cell.hyperlink = item.get("source_url")
             url_cell.font = link_font
 
-            for c in range(1, 14):
+            for c in range(1, 15):
                 cell = ws.cell(row=row_idx, column=c)
                 cell.border = thin_border
                 if is_lowest:
