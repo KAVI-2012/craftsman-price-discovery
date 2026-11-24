@@ -1,12 +1,10 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { Sun, Moon, ShieldCheck, User as UserIcon, LogOut, Radio, ChevronRight } from 'lucide-react';
+import { LogOut, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,15 +18,15 @@ export const Navbar: React.FC = () => {
       case '/':
         return 'Executive Overview';
       case '/discovery':
-        return 'Market Price Discovery';
+        return 'Price Discovery Engine';
       case '/history':
-        return 'Search History & Audit';
+        return 'Audit & Savings';
       case '/comparison':
-        return 'Price Benchmarking Matrix';
+        return 'Supplier Benchmarking';
       case '/reports':
-        return 'Procurement Reports';
+        return 'RFQ & Negotiations';
       case '/suppliers':
-        return '7 Supplier Portals';
+        return 'Portal Connectors';
       case '/users':
         return 'User Management';
       case '/settings':
@@ -39,8 +37,16 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="top-navbar">
-      {/* Left: Breadcrumbs & Status */}
+    <header
+      className="top-navbar d-flex align-items-center justify-content-between px-4 border-bottom"
+      style={{
+        height: 64,
+        backgroundColor: 'var(--header-bg)',
+        borderColor: 'var(--border-color)',
+        zIndex: 50
+      }}
+    >
+      {/* Left: Breadcrumbs & Live Status Indicator */}
       <div className="d-flex align-items-center gap-3">
         <div className="d-flex align-items-center gap-2 text-secondary small fw-medium">
           <span style={{ color: 'var(--text-muted)' }}>Craftsman</span>
@@ -48,7 +54,10 @@ export const Navbar: React.FC = () => {
           <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{getBreadcrumbTitle()}</span>
         </div>
 
-        <div className="d-none d-md-flex align-items-center gap-2 ps-3 border-start" style={{ borderColor: 'var(--border-color)' }}>
+        <div
+          className="d-none d-md-flex align-items-center gap-2 ps-3 border-start"
+          style={{ borderColor: 'var(--border-color)' }}
+        >
           <span className="pulse-indicator"></span>
           <span className="text-secondary small fw-medium" style={{ fontSize: '0.8rem' }}>
             7 Portals Synchronized
@@ -56,59 +65,72 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Right: Currency, Theme & Profile */}
+      {/* Right: Base Currency, Theme Toggle & Corporate User Profile */}
       <div className="d-flex align-items-center gap-3">
         {/* Base Currency Pill */}
         <div
           className="d-none d-sm-inline-flex align-items-center px-2.5 py-1 rounded-2 text-secondary small fw-medium"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', fontSize: '0.78rem' }}
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-color)',
+            fontSize: '0.78rem'
+          }}
         >
           <span className="text-muted me-1">Base:</span>
           <strong style={{ color: 'var(--text-primary)' }}>INR (₹)</strong>
         </div>
 
-        {/* Theme Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          className="btn btn-sm btn-outline-secondary d-flex align-items-center p-2 rounded-2"
-          style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
-          title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-        >
-          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
-
-        {/* User Profile */}
+        {/* User Profile matching reference */}
         {user ? (
-          <div className="d-flex align-items-center gap-2.5 border-start ps-3" style={{ borderColor: 'var(--border-color)' }}>
+          <div
+            className="d-flex align-items-center gap-2.5 border-start ps-3"
+            style={{ borderColor: 'var(--border-color)' }}
+          >
+            {/* Avatar Circle */}
             <div
-              className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+              className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm flex-shrink-0"
               style={{
-                width: 34,
-                height: 34,
-                background: user.role === 'admin' ? 'linear-gradient(135deg, #EF4444, #B91C1C)' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                width: 32,
+                height: 32,
+                background:
+                  user.role === 'admin'
+                    ? 'linear-gradient(135deg, #2563EB, #1D4ED8)'
+                    : 'linear-gradient(135deg, #1D4ED8, #0284C7)',
                 fontSize: '0.82rem'
               }}
             >
-              {user.full_name ? user.full_name[0].toUpperCase() : 'U'}
+              {user.full_name ? user.full_name[0].toUpperCase() : 'R'}
             </div>
 
-            <div className="d-none d-md-block text-start" style={{ lineHeight: 1.2 }}>
-              <div className="fw-semibold small" style={{ color: 'var(--text-primary)', fontSize: '0.84rem' }}>
-                {user.full_name}
+            {/* User details */}
+            <div className="d-none d-md-block text-start" style={{ lineHeight: 1.25 }}>
+              <div
+                className="fw-semibold small"
+                style={{ color: 'var(--text-primary)', fontSize: '0.82rem' }}
+              >
+                {user.full_name || 'Rajesh Kumar'} {user.full_name?.includes('(') ? '' : '(Senior Buyer)'}
               </div>
-              <div className="text-muted d-flex align-items-center gap-1.5 mt-0.5" style={{ fontSize: '0.72rem' }}>
-                <span className={`badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'} p-0.5 px-1.5`} style={{ fontSize: '0.62rem' }}>
-                  {user.role.toUpperCase()}
+              <div
+                className="text-muted d-flex align-items-center gap-1.5 mt-0.5"
+                style={{ fontSize: '0.7rem' }}
+              >
+                <span
+                  className="badge bg-primary p-0.5 px-1.5 fw-bold text-uppercase"
+                  style={{ fontSize: '0.6rem', letterSpacing: '0.04em' }}
+                >
+                  PROCUREMENT
                 </span>
-                <span>{user.department || 'Direct Sourcing'}</span>
+                <span>{user.department || 'Direct Material Sourcing'}</span>
               </div>
             </div>
 
+            {/* Logout Button */}
             <button
               onClick={handleLogout}
               className="btn btn-sm text-secondary ms-1 p-1 hover-text-danger"
               title="Logout session"
               style={{ background: 'transparent', border: 'none' }}
+              aria-label="Logout"
             >
               <LogOut size={16} />
             </button>

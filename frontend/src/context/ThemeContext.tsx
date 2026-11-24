@@ -10,16 +10,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
-    const saved = localStorage.getItem('craftsman_theme') as Theme;
-    if (saved) {
-      setTheme(saved);
-      document.body.className = `theme-${saved}`;
-    } else {
-      document.body.className = 'theme-dark';
-    }
+    // Default to clean enterprise daylight mode
+    setTheme('light');
+    document.body.className = 'theme-light';
+    localStorage.setItem('craftsman_theme', 'light');
   }, []);
 
   const toggleTheme = () => {

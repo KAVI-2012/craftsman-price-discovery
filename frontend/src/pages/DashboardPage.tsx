@@ -5,20 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search,
   Building2,
-  TrendingDown,
-  Layers,
   ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
   Clock,
-  ExternalLink,
-  Award,
-  Zap,
-  Activity,
-  DollarSign,
-  Percent,
-  CheckCircle,
-  Sparkles
+  Activity
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -43,41 +32,51 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      {/* Enterprise Welcome Banner */}
-      <div
-        className="craftsman-card mb-4"
-        style={{
-          background: 'linear-gradient(135deg, rgba(29, 78, 216, 0.22) 0%, rgba(6, 182, 212, 0.12) 100%)',
-          borderColor: 'rgba(37, 99, 235, 0.4)'
-        }}
-      >
-        <div className="row align-items-center">
-          <div className="col-12 col-md-8">
+    <div className="p-4" style={{ maxWidth: 1600, margin: '0 auto' }}>
+      {/* 1. Hero Section - Matching Reference Screenshot media_1795513103674_6f51584a.jpg */}
+      <div className="dashboard-hero-card">
+        <div className="row align-items-center g-4">
+          {/* Left Column: Heading, Badges, Description & CTAs */}
+          <div className="col-12 col-lg-8">
             <div className="d-flex align-items-center gap-2 mb-2">
-              <span className="badge bg-primary px-2.5 py-1 text-uppercase fw-bold" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
-                Craftsman Automation
+              <span
+                className="badge bg-primary px-2.5 py-1 text-uppercase fw-bold"
+                style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}
+              >
+                CRAFTSMAN AUTOMATION
               </span>
-              <span className="text-secondary small fw-medium">Direct Material Procurement Intelligence</span>
+              <span className="text-secondary small fw-medium">
+                Direct Material Procurement Intelligence
+              </span>
             </div>
-            <h3 className="fw-bold mb-1.5" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-              Executive Overview — Market Price Discovery & Procurement Dashboard
+
+            <h3
+              className="fw-bold mb-2 tracking-tight"
+              style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em', fontSize: '1.65rem' }}
+            >
+              Market Price Discovery & Supplier Benchmarking Engine
             </h3>
-            <p className="text-secondary mb-3 small" style={{ maxWidth: 640, lineHeight: 1.45 }}>
+
+            <p
+              className="text-secondary mb-3.5 small"
+              style={{ maxWidth: 660, lineHeight: 1.5, fontSize: '0.86rem' }}
+            >
               Automated multi-portal price intelligence across 7 industrial supplier networks. Real-time technical specification matching, multi-currency normalization to INR, and direct supplier verification links.
             </p>
-            <div className="d-flex flex-wrap gap-2.5">
+
+            <div className="d-flex flex-wrap align-items-center gap-2.5">
               <button
                 onClick={() => navigate('/discovery')}
-                className="craftsman-btn-primary"
+                className="craftsman-btn-primary d-inline-flex align-items-center gap-2 shadow-sm"
               >
                 <Search size={16} />
                 <span>Launch Price Discovery Search</span>
                 <ArrowRight size={15} />
               </button>
+
               <button
                 onClick={() => navigate('/suppliers')}
-                className="craftsman-btn-outline"
+                className="craftsman-btn-outline d-inline-flex align-items-center gap-2"
               >
                 <Building2 size={16} className="text-info" />
                 <span>Manage 7 Supplier Portals</span>
@@ -85,19 +84,20 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="col-12 col-md-4 mt-3 mt-md-0 text-md-end">
-            <div
-              className="p-3 rounded-3 d-inline-block text-start shadow-sm"
-              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', minWidth: 230 }}
-            >
-              <div className="d-flex align-items-center gap-2 text-success small fw-bold mb-1">
+          {/* Right Column: Active Discovery Engine Status Box */}
+          <div className="col-12 col-lg-4 text-lg-end">
+            <div className="dashboard-hero-status-box d-inline-block text-start w-100" style={{ maxWidth: 320 }}>
+              <div className="d-flex align-items-center gap-2 text-success small fw-bold mb-1.5">
                 <span className="pulse-indicator"></span>
-                <span>Active Discovery Engine</span>
+                <span style={{ fontSize: '0.8rem', letterSpacing: '0.02em' }}>Active Discovery Engine</span>
               </div>
-              <div className="h4 mb-0 fw-bold" style={{ color: 'var(--text-primary)' }}>
+              <div
+                className="fw-bold tracking-tight"
+                style={{ color: 'var(--text-primary)', fontSize: '1.42rem', lineHeight: 1.2 }}
+              >
                 7 Portals Synchronized
               </div>
-              <div className="text-muted small mt-1" style={{ fontSize: '0.74rem' }}>
+              <div className="text-muted small mt-1" style={{ fontSize: '0.76rem' }}>
                 Resilient parallel search active
               </div>
             </div>
@@ -105,92 +105,118 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 5 Distinct KPI Stat Cards */}
-      <div className="row g-3 mb-4">
-        {/* Total Searches */}
-        <div className="col-12 col-sm-6 col-xl-2">
-          <div className="craftsman-card kpi-card h-100">
-            <div className="text-muted small fw-semibold text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '0.05em' }}>
-              Total Searches
-            </div>
-            <div className="h3 mb-0 fw-bold mt-2" style={{ color: 'var(--text-primary)' }}>
-              {stats?.total_searches ?? 0}
-            </div>
-            <div className="text-secondary small mt-1" style={{ fontSize: '0.74rem' }}>
-              Automated runs
-            </div>
+      {/* 2. KPI Dashboard - 5 Distinct Equal-Width Cards in Grid */}
+      <div className="dashboard-kpi-grid">
+        {/* Card 1: Total Searches */}
+        <div className="dashboard-kpi-card kpi-accent-blue">
+          <div
+            className="text-muted small fw-bold text-uppercase"
+            style={{ fontSize: '0.7rem', letterSpacing: '0.06em' }}
+          >
+            TOTAL SEARCHES
+          </div>
+          <div
+            className="fw-bold my-2"
+            style={{ color: 'var(--text-primary)', fontSize: '1.75rem', lineHeight: 1.1 }}
+          >
+            {stats?.total_searches ?? 0}
+          </div>
+          <div className="text-secondary small" style={{ fontSize: '0.74rem' }}>
+            Automated runs
           </div>
         </div>
 
-        {/* Suppliers Configured */}
-        <div className="col-12 col-sm-6 col-xl-2">
-          <div className="craftsman-card kpi-card green h-100">
-            <div className="text-muted small fw-semibold text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '0.05em' }}>
-              Supplier Portals
-            </div>
-            <div className="h3 mb-0 fw-bold mt-2 text-success">
-              {stats?.total_suppliers_configured ?? 7} / 7
-            </div>
-            <div className="text-secondary small mt-1" style={{ fontSize: '0.74rem' }}>
-              Active Connectors
-            </div>
+        {/* Card 2: Supplier Portals */}
+        <div className="dashboard-kpi-card kpi-accent-green">
+          <div
+            className="text-muted small fw-bold text-uppercase"
+            style={{ fontSize: '0.7rem', letterSpacing: '0.06em' }}
+          >
+            SUPPLIER PORTALS
+          </div>
+          <div
+            className="fw-bold my-2 text-success"
+            style={{ fontSize: '1.75rem', lineHeight: 1.1 }}
+          >
+            {stats?.total_suppliers_configured ?? 7} / 7
+          </div>
+          <div className="text-secondary small" style={{ fontSize: '0.74rem' }}>
+            Active Connectors
           </div>
         </div>
 
-        {/* Connection Rate */}
-        <div className="col-12 col-sm-6 col-xl-2">
-          <div className="craftsman-card kpi-card cyan h-100">
-            <div className="text-muted small fw-semibold text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '0.05em' }}>
-              Success Rate
-            </div>
-            <div className="h3 mb-0 fw-bold mt-2 text-info">
-              {stats?.successful_connections_rate ?? 98.4}%
-            </div>
-            <div className="text-secondary small mt-1" style={{ fontSize: '0.74rem' }}>
-              Connection Uptime
-            </div>
+        {/* Card 3: Success Rate */}
+        <div className="dashboard-kpi-card kpi-accent-cyan">
+          <div
+            className="text-muted small fw-bold text-uppercase"
+            style={{ fontSize: '0.7rem', letterSpacing: '0.06em' }}
+          >
+            SUCCESS RATE
+          </div>
+          <div
+            className="fw-bold my-2 text-info"
+            style={{ fontSize: '1.75rem', lineHeight: 1.1 }}
+          >
+            {stats?.successful_connections_rate ?? 98.4}%
+          </div>
+          <div className="text-secondary small" style={{ fontSize: '0.74rem' }}>
+            Connection Uptime
           </div>
         </div>
 
-        {/* Products Discovered */}
-        <div className="col-12 col-sm-6 col-xl-3">
-          <div className="craftsman-card kpi-card amber h-100">
-            <div className="text-muted small fw-semibold text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '0.05em' }}>
-              Products Discovered
-            </div>
-            <div className="h3 mb-0 fw-bold mt-2 text-warning">
-              {stats?.total_products_discovered ?? 0}
-            </div>
-            <div className="text-secondary small mt-1" style={{ fontSize: '0.74rem' }}>
-              Extracted SKU listings
-            </div>
+        {/* Card 4: Products Discovered */}
+        <div className="dashboard-kpi-card kpi-accent-amber">
+          <div
+            className="text-muted small fw-bold text-uppercase"
+            style={{ fontSize: '0.7rem', letterSpacing: '0.06em' }}
+          >
+            PRODUCTS DISCOVERED
+          </div>
+          <div
+            className="fw-bold my-2 text-warning"
+            style={{ fontSize: '1.75rem', lineHeight: 1.1 }}
+          >
+            {stats?.total_products_discovered ?? 0}
+          </div>
+          <div className="text-secondary small" style={{ fontSize: '0.74rem' }}>
+            Extracted SKU listings
           </div>
         </div>
 
-        {/* Potential Cost Savings */}
-        <div className="col-12 col-sm-6 col-xl-3">
-          <div className="craftsman-card kpi-card green h-100">
-            <div className="text-muted small fw-semibold text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '0.05em' }}>
-              Total Savings Found
-            </div>
-            <div className="h3 mb-0 fw-bold mt-2 text-success">
-              ₹{stats?.total_potential_savings?.toLocaleString('en-IN') ?? '0'}
-            </div>
-            <div className="text-secondary small mt-1" style={{ fontSize: '0.74rem' }}>
-              Max spread vs lowest price
-            </div>
+        {/* Card 5: Total Savings Found */}
+        <div className="dashboard-kpi-card kpi-accent-emerald">
+          <div
+            className="text-muted small fw-bold text-uppercase"
+            style={{ fontSize: '0.7rem', letterSpacing: '0.06em' }}
+          >
+            TOTAL SAVINGS FOUND
+          </div>
+          <div
+            className="fw-bold my-2 text-success"
+            style={{ fontSize: '1.75rem', lineHeight: 1.1 }}
+          >
+            ₹{stats?.total_potential_savings?.toLocaleString('en-IN') ?? '0'}
+          </div>
+          <div className="text-secondary small" style={{ fontSize: '0.74rem' }}>
+            Max spread vs lowest price
           </div>
         </div>
       </div>
 
+      {/* 3. Dashboard Content Section: Recent Discoveries & 7 Portals Status */}
       <div className="row g-4">
-        {/* Recent Search Activity */}
+        {/* Left Column: Recent Price Discoveries */}
         <div className="col-12 col-lg-7">
           <div className="craftsman-card h-100">
-            <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom" style={{ borderColor: 'var(--border-color)' }}>
+            <div
+              className="d-flex align-items-center justify-content-between mb-3 pb-2.5 border-bottom"
+              style={{ borderColor: 'var(--border-color)' }}
+            >
               <div className="d-flex align-items-center gap-2">
                 <Clock size={17} className="text-primary" />
-                <h6 className="mb-0 fw-bold" style={{ color: 'var(--text-primary)' }}>Recent Price Discoveries</h6>
+                <h6 className="mb-0 fw-bold" style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>
+                  Recent Price Discoveries
+                </h6>
               </div>
               <button
                 onClick={() => navigate('/history')}
@@ -204,7 +230,7 @@ export const DashboardPage: React.FC = () => {
             <div className="table-responsive">
               <table className="table table-sm" style={{ color: 'var(--text-primary)', fontSize: '0.84rem' }}>
                 <thead>
-                  <tr className="text-muted small" style={{ fontSize: '0.74rem', textTransform: 'uppercase' }}>
+                  <tr className="text-muted small" style={{ fontSize: '0.72rem', textTransform: 'uppercase' }}>
                     <th>Part / Item</th>
                     <th>Date</th>
                     <th>Suppliers</th>
@@ -253,7 +279,7 @@ export const DashboardPage: React.FC = () => {
                   ) : (
                     <tr>
                       <td colSpan={6} className="text-center py-4 text-muted small">
-                        No recent searches found. Launch your first search above!
+                        No recent searches found. Launch your first price discovery search above!
                       </td>
                     </tr>
                   )}
@@ -263,13 +289,16 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 7 Supplier Portals Health Matrix */}
+        {/* Right Column: Configured 7 Portals Status */}
         <div className="col-12 col-lg-5">
           <div className="craftsman-card h-100">
-            <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom" style={{ borderColor: 'var(--border-color)' }}>
+            <div
+              className="d-flex align-items-center justify-content-between mb-3 pb-2.5 border-bottom"
+              style={{ borderColor: 'var(--border-color)' }}
+            >
               <div className="d-flex align-items-center gap-2">
                 <Activity size={17} className="text-success" />
-                <h6 className="mb-0 fw-bold" style={{ color: 'var(--text-primary)' }}>
+                <h6 className="mb-0 fw-bold" style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>
                   Configured 7 Portals Status
                 </h6>
               </div>
@@ -307,7 +336,10 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   <div className="text-end">
-                    <span className={`badge ${s.status === 'HEALTHY' ? 'bg-success' : 'bg-warning'} px-2 py-0.5 small`} style={{ fontSize: '0.68rem' }}>
+                    <span
+                      className={`badge ${s.status === 'HEALTHY' ? 'bg-success' : 'bg-warning'} px-2 py-0.5 small`}
+                      style={{ fontSize: '0.68rem' }}
+                    >
                       {s.status}
                     </span>
                     <div className="text-muted mt-0.5" style={{ fontSize: '0.7rem' }}>

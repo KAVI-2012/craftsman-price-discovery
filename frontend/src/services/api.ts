@@ -107,6 +107,30 @@ export const apiClient = {
     return res.data;
   },
 
+  async createConnector(data: {
+    supplier_name: string;
+    adapter_type: string;
+    base_url: string;
+    search_endpoint?: string;
+    api_key?: string;
+    api_secret?: string;
+    timeout_seconds?: number;
+    is_enabled?: boolean;
+  }): Promise<SupplierConnector> {
+    const res = await api.post('/suppliers/connectors', data);
+    return res.data;
+  },
+
+  async deleteConnector(slotNumber: number): Promise<{ success: boolean; message: string }> {
+    const res = await api.delete(`/suppliers/connectors/${slotNumber}`);
+    return res.data;
+  },
+
+  async exportConnectors(): Promise<any> {
+    const res = await api.get('/suppliers/connectors/export');
+    return res.data;
+  },
+
   async toggleConnector(slotNumber: number): Promise<SupplierConnector> {
     const res = await api.post(`/suppliers/connectors/${slotNumber}/toggle`);
     return res.data;

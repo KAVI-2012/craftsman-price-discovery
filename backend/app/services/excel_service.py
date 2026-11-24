@@ -137,15 +137,9 @@ class ExcelBOMService:
         ws.append(headers)
 
         sample_data = [
-            ("SR00100100000015", "Ser_Nipple RL-123_Z462H1712106"),
-            ("SR00100100000022", "Ser_O Ring B2401-P95-Z261A3309501_Z261A3309501"),
-            ("SR00100100000026", "Ser_Bearing Unit_ -"),
-            ("SR00100100000058", "Ser_Timing Belt 624-84U-25 (9GX10N37)_Z251V1030023"),
-            ("SR00100100000071", "Ser_Roller Bearing NTN 32920_Z226A3292010"),
-            ("SR00100100000090", "Ser_Solenoid Valve DSG-01-3C4-D24-70"),
-            ("SR00100100000094", "Ser_CF 1607C3446-M6_Z239Z0200040"),
-            ("SR00100100000099", "Ser_Cam Follower CF30-BUU_Z234P3200300"),
-            ("SR00100100000125", "Ser_O-Ring_B2401-G65_Z261A3306501/Z261A7306501"),
+            ("SAMPLE-001", "Standard Ball Bearing 6204-2RS"),
+            ("SAMPLE-002", "Industrial Electric Motor 5 HP 1440 RPM"),
+            ("SAMPLE-003", "Hydraulic Directional Control Valve 24V DC"),
         ]
 
         for row in sample_data:

@@ -166,18 +166,21 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
           </h5>
         </div>
 
-        <div className="d-flex align-items-center gap-2">
-          <a
-            href={apiClient.getSampleTemplateUrl()}
-            download="Craftsman_BOM_Template.xlsx"
-            className="craftsman-btn-outline py-1.5 px-3 text-decoration-none d-flex align-items-center gap-1.5"
-            style={{ fontSize: '0.82rem' }}
-            title="Download sample Excel template matching ITEM_CODE and ITEM_DESC"
-          >
-            <Download size={14} className="text-info" />
-            <span>Download Sample Excel</span>
-          </a>
-        </div>
+        {batchResults.length > 0 && (
+          <div className="d-flex align-items-center gap-2">
+            <button
+              type="button"
+              onClick={handleExportExcel}
+              disabled={isExporting}
+              className="craftsman-btn-outline py-1.5 px-3 d-flex align-items-center gap-1.5 text-success border-success-subtle"
+              style={{ fontSize: '0.82rem' }}
+              title="Download consolidated Excel report of discovered market prices"
+            >
+              <Download size={14} />
+              <span>{isExporting ? 'Generating Report...' : 'Export Consolidated Report (.XLSX)'}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {errorMsg && (
@@ -193,11 +196,12 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className="p-5 text-center rounded-3 border-2 border-dashed d-flex flex-column align-items-center justify-content-center cursor-pointer transition-all"
+          className="text-center rounded-3 border-2 border-dashed d-flex flex-column align-items-center justify-content-center cursor-pointer transition-all"
           style={{
             borderColor: 'var(--border-color)',
             background: 'var(--bg-primary)',
-            minHeight: 220,
+            padding: '36px 24px 48px 24px',
+            minHeight: 250,
             cursor: 'pointer'
           }}
         >
@@ -222,8 +226,9 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
           </p>
           <button
             type="button"
-            className="craftsman-btn-primary py-2 px-3.5 d-inline-flex align-items-center gap-2"
+            className="craftsman-btn-primary py-2 px-4 d-inline-flex align-items-center gap-2 shadow-sm"
             disabled={isUploading}
+            style={{ marginBottom: '4px' }}
           >
             {isUploading ? (
               <>
@@ -315,7 +320,7 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
                     <Layers size={14} className="text-primary" />
                     <span>Total BOM Items Processed</span>
                   </div>
-                  <h4 className="fw-bold mb-0 text-white">{totalItems} Products</h4>
+                  <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>{totalItems} Products</h4>
                   <span className="text-success small" style={{ fontSize: '0.72rem' }}>100% Multi-Portal Scanned</span>
                 </div>
               </div>
@@ -366,7 +371,7 @@ export const ExcelBOMDiscovery: React.FC<ExcelBOMDiscoveryProps> = ({ onSelectSe
           {/* Export Action Bar */}
           {batchResults.length > 0 && (
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h6 className="fw-bold mb-0 text-white">Batch Price Discovery Results</h6>
+              <h6 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>Batch Price Discovery Results</h6>
               <button
                 type="button"
                 onClick={handleExportExcel}

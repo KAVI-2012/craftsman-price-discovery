@@ -8,7 +8,7 @@ import { ExcelBOMDiscovery } from '../components/search/ExcelBOMDiscovery';
 import { PriceCharts } from '../components/comparison/PriceCharts';
 import { ComparisonTable } from '../components/comparison/ComparisonTable';
 import { PriceHistoryChart } from '../components/history/PriceHistoryChart';
-import { FileSpreadsheet, FileText, History, RefreshCw, CheckCircle2, AlertTriangle, ShieldCheck, Search, UploadCloud } from 'lucide-react';
+import { FileSpreadsheet, FileText, History, RefreshCw, CheckCircle2, AlertTriangle, ShieldCheck, Search, UploadCloud, ArrowLeft } from 'lucide-react';
 
 export const DiscoveryPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -16,6 +16,7 @@ export const DiscoveryPage: React.FC = () => {
   const modeParam = searchParams.get('mode');
 
   const [activeMode, setActiveMode] = useState<'single' | 'excel'>(modeParam === 'excel' ? 'excel' : 'single');
+  const [bulkItemDetail, setBulkItemDetail] = useState<number | null>(null);
 
   useEffect(() => {
     if (modeParam === 'excel') {
@@ -31,13 +32,18 @@ export const DiscoveryPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (searchIdParam) {
+    const qParam = searchParams.get('q');
+    const partParam = searchParams.get('part');
+    if (qParam || partParam) {
+      handleInitiateSearch({
+        query: qParam || partParam || '',
+        part_number: partParam || undefined,
+        target_currency: searchParams.get('currency') || 'INR'
+      });
+    } else if (searchIdParam) {
       loadExistingSearch(parseInt(searchIdParam, 10));
-    } else {
-      // Load baseline benchmark search #1 by default so the page displays rich data
-      loadExistingSearch(1);
     }
-  }, [searchIdParam]);
+  }, [searchParams]);
 
   const loadExistingSearch = async (id: number) => {
     try {
@@ -105,7 +111,7 @@ export const DiscoveryPage: React.FC = () => {
           </p>
         </div>
 
-        {comparisonData && (
+        {comparisonData && ((activeMode === 'single' && !bulkItemDetail) || bulkItemDetail) && (
           <div className="d-flex align-items-center gap-2">
             <a
               href={apiClient.getExcelExportUrl(comparisonData.search_id)}
@@ -129,44 +135,70 @@ export const DiscoveryPage: React.FC = () => {
         )}
       </div>
 
-      {/* Mode Switcher Tabs */}
-      <div className="d-flex align-items-center gap-2 mb-4 p-1.5 rounded-3 d-inline-flex" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
-        <button
-          type="button"
-          onClick={() => setActiveMode('single')}
-          className={`btn btn-sm d-flex align-items-center gap-2 px-3 py-1.5 fw-semibold ${activeMode === 'single' ? 'craftsman-btn-primary' : 'text-secondary border-0 bg-transparent'}`}
-          style={{ fontSize: '0.84rem' }}
-        >
-          <Search size={15} />
-          <span>Single Item Search</span>
-        </button>
+      {/* Mode Switcher Tabs - Hidden when viewing an item's 7-portal detail from bulk upload */}
+      {!bulkItemDetail && (
+        <div className="d-flex align-items-center gap-2 mb-4 p-1.5 rounded-3 d-inline-flex" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+          <button
+            type="button"
+            onClick={() => setActiveMode('single')}
+            className={`btn btn-sm d-flex align-items-center gap-2 px-3 py-1.5 fw-semibold ${activeMode === 'single' ? 'craftsman-btn-primary' : 'text-secondary border-0 bg-transparent'}`}
+            style={{ fontSize: '0.84rem' }}
+          >
+            <Search size={15} />
+            <span>Single Item Search</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveMode('excel')}
-          className={`btn btn-sm d-flex align-items-center gap-2 px-3 py-1.5 fw-semibold ${activeMode === 'excel' ? 'craftsman-btn-primary' : 'text-secondary border-0 bg-transparent'}`}
-          style={{ fontSize: '0.84rem' }}
-        >
-          <UploadCloud size={15} />
-          <span>Bulk Excel BOM Upload</span>
-          <span className="badge bg-success-subtle text-success border border-success-subtle ms-1" style={{ fontSize: '0.68rem' }}>
-            ITEM_CODE & DESC
-          </span>
-        </button>
-      </div>
-
-      {/* Excel BOM Mode */}
-      {activeMode === 'excel' && (
-        <ExcelBOMDiscovery
-          onSelectSearchId={(id) => {
-            loadExistingSearch(id);
-            setActiveMode('single');
-          }}
-        />
+          <button
+            type="button"
+            onClick={() => setActiveMode('excel')}
+            className={`btn btn-sm d-flex align-items-center gap-2 px-3 py-1.5 fw-semibold ${activeMode === 'excel' ? 'craftsman-btn-primary' : 'text-secondary border-0 bg-transparent'}`}
+            style={{ fontSize: '0.84rem' }}
+          >
+            <UploadCloud size={15} />
+            <span>Bulk Excel BOM Upload</span>
+            <span className="badge bg-success-subtle text-success border border-success-subtle ms-1" style={{ fontSize: '0.68rem' }}>
+              ITEM_CODE & DESC
+            </span>
+          </button>
+        </div>
       )}
 
-      {/* Single Search Mode */}
-      {activeMode === 'single' && (
+      {/* Bulk Item Inspection Return Bar - Allows user to easily go back to all bulk upload items */}
+      {bulkItemDetail && (
+        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 p-3 rounded-3 shadow-sm" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+          <button
+            type="button"
+            onClick={() => setBulkItemDetail(null)}
+            className="craftsman-btn-primary d-inline-flex align-items-center gap-2 py-2 px-3.5 shadow"
+            style={{ fontSize: '0.85rem' }}
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Bulk BOM Upload Results</span>
+          </button>
+
+          <div className="d-flex align-items-center gap-2">
+            <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 small fw-semibold">
+              7-Portal Market Comparison Status
+            </span>
+            <span className="text-secondary small d-none d-md-inline">
+              Comparing IndiaMART, Moglix, Industrybuying, RS, Misumi, Grainger & Craftsman OEM
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Excel BOM Mode - Kept mounted in background so uploaded files & results are NEVER lost */}
+      <div style={{ display: activeMode === 'excel' && !bulkItemDetail ? 'block' : 'none' }}>
+        <ExcelBOMDiscovery
+          onSelectSearchId={(id) => {
+            setBulkItemDetail(id);
+            loadExistingSearch(id);
+          }}
+        />
+      </div>
+
+      {/* Single Search Mode - Only shown in single mode and NOT when inspecting a bulk item */}
+      {activeMode === 'single' && !bulkItemDetail && (
         <SearchForm onSearch={handleInitiateSearch} isLoading={isLoading} />
       )}
 
@@ -178,8 +210,8 @@ export const DiscoveryPage: React.FC = () => {
         </div>
       )}
 
-      {/* Live Research Progress Tracker */}
-      {isLoading && (
+      {/* Live Research Progress Tracker - Dedicated to Single Item Search */}
+      {activeMode === 'single' && isLoading && (
         <SearchProgress
           query={currentQuery}
           partNumber={currentPartNumber}
@@ -187,8 +219,21 @@ export const DiscoveryPage: React.FC = () => {
         />
       )}
 
-      {/* Results Workspace */}
-      {comparisonData && !isLoading && (
+      {/* Ready State - Displayed before user initiates a search in single mode */}
+      {activeMode === 'single' && !bulkItemDetail && !comparisonData && !isLoading && !errorMsg && (
+        <div className="text-center py-5 px-3 rounded-3 border" style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
+          <div className="rounded-circle d-inline-flex align-items-center justify-content-center text-primary mb-3 shadow-sm" style={{ width: 48, height: 48, background: 'rgba(37, 99, 235, 0.1)' }}>
+            <Search size={22} />
+          </div>
+          <h6 className="fw-bold mb-1 text-white">Ready for Real-Time Price Discovery</h6>
+          <p className="text-secondary small mb-0" style={{ maxWidth: 480, margin: '0 auto' }}>
+            Enter an item description, part number, or click a benchmark part above to compare live prices across 7 industrial supplier portals.
+          </p>
+        </div>
+      )}
+
+      {/* Results Workspace - Shown in Single Search mode OR when inspecting a Bulk Item's 7-portal status */}
+      {((activeMode === 'single' && !bulkItemDetail) || bulkItemDetail) && comparisonData && !isLoading && (
         <div>
           {/* Search Result Summary Header */}
           <div className="craftsman-card mb-4" style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>

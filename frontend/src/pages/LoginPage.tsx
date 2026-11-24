@@ -47,10 +47,14 @@ export const LoginPage: React.FC = () => {
         {/* Brand */}
         <div className="text-center mb-4">
           <div
-            className="rounded-3 d-inline-flex align-items-center justify-content-center text-white mb-2.5 shadow"
-            style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #1E40AF 0%, #06B6D4 100%)' }}
+            className="rounded-3 d-inline-flex align-items-center justify-content-center bg-white mb-2.5 shadow overflow-hidden"
+            style={{ width: 54, height: 54, padding: 3 }}
           >
-            <Cpu size={26} />
+            <img
+              src="/craftsman-logo.png"
+              alt="Craftsman Automation Logo"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
           </div>
           <h4 className="fw-bold mb-0 text-white tracking-tight" style={{ letterSpacing: '-0.02em' }}>
             CRAFTSMAN AUTOMATION

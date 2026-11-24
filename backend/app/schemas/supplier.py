@@ -34,6 +34,17 @@ class SupplierConnectorUpdate(BaseModel):
     custom_headers_json: Optional[str] = None
     config_json: Optional[str] = None
 
+class SupplierConnectorCreate(BaseModel):
+    supplier_name: str
+    adapter_type: str = "custom"
+    base_url: str
+    search_endpoint: Optional[str] = "/search"
+    api_key: Optional[str] = None
+    api_secret: Optional[str] = None
+    is_enabled: bool = True
+    timeout_seconds: int = 8
+    custom_headers_json: Optional[str] = "{}"
+
 class SupplierResponse(BaseModel):
     id: int
     name: str

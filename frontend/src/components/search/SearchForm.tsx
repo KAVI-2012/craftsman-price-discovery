@@ -67,13 +67,16 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
   };
 
   return (
-    <div className="craftsman-card mb-4" style={{ background: 'var(--bg-card)' }}>
+    <div className="discovery-search-card mb-4">
       <form onSubmit={handleSubmit}>
+        {/* Row 1: The Three Inputs (Consistent grid, equal heights, aligned labels) */}
         <div className="row g-3">
           {/* Main Item Search */}
-          <div className="col-12 col-lg-7">
-            <label className="form-label small fw-semibold text-secondary d-flex justify-content-between align-items-center mb-1.5">
-              <span>Item Description / Technical Keywords <span className="text-danger">*</span></span>
+          <div className="col-12 col-lg-6">
+            <div className="search-field-label justify-content-between">
+              <span>
+                Item Description / Technical Keywords <span className="text-danger">*</span>
+              </span>
               {(query || partNumber) && (
                 <button
                   type="button"
@@ -84,14 +87,12 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
                   Clear all
                 </button>
               )}
-            </label>
-            <div className="input-group">
-              <span className="input-group-text bg-transparent border-end-0" style={{ borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>
-                <Search size={18} />
-              </span>
+            </div>
+            <div className="search-input-box">
+              <Search size={18} className="search-icon" />
               <input
                 type="text"
-                className="form-control craftsman-input border-start-0 ps-0"
+                className="form-control craftsman-input search-form-control"
                 placeholder="e.g. Hydraulic Relief Valve 350 Bar, Industrial Electric Motor 5 HP..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -101,41 +102,52 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
           </div>
 
           {/* Part Number / Item Code */}
-          <div className="col-12 col-md-8 col-lg-3">
-            <label className="form-label small fw-semibold text-secondary mb-1.5">
+          <div className="col-12 col-sm-7 col-lg-4">
+            <div className="search-field-label">
               Part Number / OEM Code
-            </label>
+            </div>
             <input
               type="text"
-              className="form-control craftsman-input mono"
+              className="form-control craftsman-input search-form-control mono"
               placeholder="e.g. RL-123_Z462H1712106"
               value={partNumber}
               onChange={(e) => setPartNumber(e.target.value)}
             />
           </div>
 
-          {/* Currency Selection */}
-          <div className="col-12 col-md-4 col-lg-2">
-            <label className="form-label small fw-semibold text-secondary mb-1.5">
+          {/* Currency Selection - Locked to INR Base Currency */}
+          <div className="col-12 col-sm-5 col-lg-2">
+            <div className="search-field-label">
               Target Currency
-            </label>
+            </div>
             <select
-              className="form-select craftsman-input"
+              className="form-select craftsman-input search-form-control"
               value={targetCurrency}
               onChange={(e) => setTargetCurrency(e.target.value)}
+              title="All supplier prices are standardized to INR (₹) base currency"
             >
               <option value="INR">INR (₹) Base</option>
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
             </select>
           </div>
         </div>
 
-        {/* Quick Sample Search Buttons */}
-        <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3 pt-2.5 border-top" style={{ borderColor: 'var(--border-color)' }}>
-          <div className="d-flex flex-wrap align-items-center gap-1.5">
-            <span className="text-muted small d-flex align-items-center gap-1 me-1" style={{ fontSize: '0.78rem' }}>
+        {/* Row 2: Benchmark Suggestions & Advanced Specs Toggle Button */}
+        <div
+          className="d-flex align-items-center justify-content-between gap-3 mt-3 pt-3 border-top"
+          style={{ borderColor: 'var(--border-color)' }}
+        >
+          {/* Left: Benchmark suggestions in a single scrollable row without wrapping */}
+          <div
+            className="d-flex align-items-center gap-1.5 min-w-0 overflow-x-auto py-1"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}
+          >
+            <span
+              className="text-muted small d-flex align-items-center gap-1 flex-shrink-0 me-1"
+              style={{ fontSize: '0.78rem', whiteSpace: 'nowrap' }}
+            >
               <Sparkles size={14} className="text-warning" /> Benchmark Parts:
             </span>
             {sampleSearches.map((s, idx) => (
@@ -143,41 +155,41 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
                 key={idx}
                 type="button"
                 onClick={() => handleSelectSample(s)}
-                className="badge btn p-1.5 px-2.5 text-secondary border rounded-pill transition-all"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  borderColor: 'var(--border-color)',
-                  fontSize: '0.74rem',
-                  fontWeight: 500
-                }}
+                className="btn benchmark-part-pill flex-shrink-0"
               >
                 {s.label}
               </button>
             ))}
           </div>
 
-          {/* Advanced Specs Drawer Toggle */}
+          {/* Right: Advanced Specs & Filters Button (Guaranteed visible, flex-shrink-0, pinned to right) */}
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="btn btn-sm text-secondary d-flex align-items-center gap-1 p-0"
-            style={{ fontSize: '0.8rem' }}
+            className={`advanced-filters-btn flex-shrink-0 ms-auto ${showAdvanced ? 'active' : ''}`}
           >
             <SlidersHorizontal size={14} />
-            <span>{showAdvanced ? 'Hide Advanced Filters' : 'Advanced Specs & Filters'}</span>
+            <span>{showAdvanced ? 'Hide Advanced Specs' : 'Advanced Specs & Filters'}</span>
             {showAdvanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         </div>
 
         {/* Advanced Filters Drawer */}
         {showAdvanced && (
-          <div className="p-3 mt-3 rounded-2 border" style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
+          <div
+            className="p-3 mt-3 rounded-3 border"
+            style={{
+              background: 'var(--bg-secondary)',
+              borderColor: 'var(--border-color)'
+            }}
+          >
             <div className="row g-3">
               <div className="col-12 col-md-4">
-                <label className="form-label small text-secondary mb-1">Item Category</label>
+                <label className="form-label small fw-semibold text-secondary mb-1.5">Item Category</label>
                 <input
                   type="text"
-                  className="form-control form-control-sm craftsman-input"
+                  className="form-control craftsman-input"
+                  style={{ height: '40px', borderRadius: '7px', fontSize: '0.85rem' }}
                   placeholder="e.g. Hydraulics, Motors, Bearings"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -185,10 +197,11 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
               </div>
 
               <div className="col-12 col-md-4">
-                <label className="form-label small text-secondary mb-1">Preferred Manufacturer</label>
+                <label className="form-label small fw-semibold text-secondary mb-1.5">Preferred Manufacturer</label>
                 <input
                   type="text"
-                  className="form-control form-control-sm craftsman-input"
+                  className="form-control craftsman-input"
+                  style={{ height: '40px', borderRadius: '7px', fontSize: '0.85rem' }}
                   placeholder="e.g. Bosch Rexroth, Siemens, SKF"
                   value={manufacturer}
                   onChange={(e) => setManufacturer(e.target.value)}
@@ -196,10 +209,11 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
               </div>
 
               <div className="col-12 col-md-4">
-                <label className="form-label small text-secondary mb-1">Key-Value Specifications</label>
+                <label className="form-label small fw-semibold text-secondary mb-1.5">Key-Value Specifications</label>
                 <input
                   type="text"
-                  className="form-control form-control-sm craftsman-input"
+                  className="form-control craftsman-input"
+                  style={{ height: '40px', borderRadius: '7px', fontSize: '0.85rem' }}
                   placeholder="Key:Value, e.g. Pressure:350 Bar, Flow:120 LPM"
                   value={specsInput}
                   onChange={(e) => setSpecsInput(e.target.value)}
@@ -209,12 +223,17 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
           </div>
         )}
 
-        {/* Action Button */}
-        <div className="d-flex justify-content-end mt-3 pt-2">
+        {/* Row 3: Action Search Button (Consistent bottom-right placement with balanced spacing) */}
+        <div className="d-flex justify-content-end align-items-center mt-3 pt-2">
           <button
             type="submit"
             disabled={isLoading || (!query.trim() && !partNumber.trim())}
-            className="craftsman-btn-primary px-4 py-2"
+            className="craftsman-btn-primary px-4 py-2.5 shadow-sm"
+            style={{
+              height: '44px',
+              borderRadius: '8px',
+              fontSize: '0.88rem'
+            }}
           >
             {isLoading ? (
               <>
